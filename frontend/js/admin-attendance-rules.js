@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function loadRule() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
-    const res = await fetch('/api/admin/attendance-rules/global', {
+    const res = await fetch('http://localhost:8080/api/admin/attendance-rules/global', {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (res.ok) {
@@ -25,7 +25,7 @@ async function saveRule(e) {
         minDurationMinutes: document.getElementById('minDuration').value ? parseInt(document.getElementById('minDuration').value) : null,
         lateThresholdMinutes: document.getElementById('lateThreshold').value ? parseInt(document.getElementById('lateThreshold').value) : null
     };
-    const res = await fetch('/api/admin/attendance-rules/global', {
+    const res = await fetch('http://localhost:8080/api/admin/attendance-rules/global', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify(rule)

@@ -4,7 +4,7 @@ async function loadTodaysClasses() {
     const container = document.getElementById('todaysClasses');
 
     try {
-        const response = await fetch('/api/teacher/live-classes/today', {
+        const response = await fetch('http://localhost:8080/api/teacher/live-classes/today', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -37,7 +37,7 @@ async function loadTodaysClasses() {
 async function startClass(classId) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
     try {
-        const response = await fetch(`/api/teacher/live-classes/${classId}/start`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/live-classes/${classId}/start`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -52,7 +52,7 @@ async function startClass(classId) {
 async function endClass(classId) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
     try {
-        const response = await fetch(`/api/teacher/live-classes/${classId}/end`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/live-classes/${classId}/end`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -69,7 +69,7 @@ async function loadTeacherTimetable() {
     const container = document.getElementById('teacherTimetable');
 
     try {
-        const response = await fetch('/api/timetable/mine', {
+        const response = await fetch('http://localhost:8080/api/timetable/mine', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });

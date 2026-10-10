@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function loadAttendance() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
-    const res = await fetch(`/api/teacher/live-classes/${currentLiveClassId}/attendance`, {
+    const res = await fetch(`http://localhost:8080/api/teacher/live-classes/${currentLiveClassId}/attendance`, {
         headers: { 'Authorization': `Bearer ${token}` }
     });
     if (!res.ok) { alert('Failed to load attendance'); return; }
@@ -19,7 +19,7 @@ async function loadAttendance() {
 
 async function markAttendance(studentId, status) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
-    const res = await fetch(`/api/teacher/live-classes/${currentLiveClassId}/attendance`, {
+    const res = await fetch(`http://localhost:8080/api/teacher/live-classes/${currentLiveClassId}/attendance`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ studentId, status })
@@ -30,7 +30,7 @@ async function markAttendance(studentId, status) {
 
 async function markAllPresent() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
-    const res = await fetch(`/api/teacher/live-classes/${currentLiveClassId}/attendance/mark-all-present`, {
+    const res = await fetch(`http://localhost:8080/api/teacher/live-classes/${currentLiveClassId}/attendance/mark-all-present`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
     });

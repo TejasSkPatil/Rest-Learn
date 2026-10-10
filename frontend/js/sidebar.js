@@ -56,9 +56,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     navLinks.innerHTML = html;
-    navLinks.addEventListener('click', function(e) {
-        if (e.target.closest('a') && window.closeSidebar) {
-            window.closeSidebar();
-        }
-    });
 });

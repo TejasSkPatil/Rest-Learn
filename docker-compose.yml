@@ -1,0 +1,20 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: elearning-mysql
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: elearning
+      MYSQL_USER: elearning_user
+      MYSQL_PASSWORD: elearning_password
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

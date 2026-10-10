@@ -23,7 +23,7 @@ async function loadVideos() {
     const videosList = document.getElementById('videosList');
 
     try {
-        const response = await fetch(`/api/teacher/modules/${currentModuleId}/videos`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/videos`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ async function uploadVideo() {
     formData.append('file', fileInput.files[0]);
 
     try {
-        const response = await fetch(`/api/teacher/modules/${currentModuleId}/videos`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/videos`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -103,7 +103,7 @@ async function deleteVideo(videoId) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`/api/teacher/modules/${currentModuleId}/videos/${videoId}`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/videos/${videoId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`

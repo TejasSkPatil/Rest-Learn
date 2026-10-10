@@ -18,7 +18,7 @@ async function loadCourseDetails() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`/api/teacher/courses/${currentCourseId}`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/courses/${currentCourseId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ async function regenerateCode() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`/api/teacher/courses/${currentCourseId}/regenerate-code`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/courses/${currentCourseId}/regenerate-code`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ async function toggleCodeStatus() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`/api/teacher/courses/${currentCourseId}/code-status?active=${!isCodeActive}`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/courses/${currentCourseId}/code-status?active=${!isCodeActive}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',

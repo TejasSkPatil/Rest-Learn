@@ -23,7 +23,7 @@ async function loadResources() {
     const resourcesList = document.getElementById('resourcesList');
 
     try {
-        const response = await fetch(`/api/teacher/modules/${currentModuleId}/resources`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/resources`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ async function uploadResource() {
     formData.append('file', fileInput.files[0]);
 
     try {
-        const response = await fetch(`/api/teacher/modules/${currentModuleId}/resources`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/resources`, {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${token}`
@@ -103,7 +103,7 @@ async function deleteResource(resourceId) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`/api/teacher/modules/${currentModuleId}/resources/${resourceId}`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/resources/${resourceId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`

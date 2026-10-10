@@ -23,7 +23,7 @@ async function loadVideos() {
     const videosList = document.getElementById('videosList');
 
     try {
-        const response = await fetch(`/api/modules/${currentModuleId}/videos`, {
+        const response = await fetch(`http://localhost:8080/api/modules/${currentModuleId}/videos`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ async function playVideo(videoId, title) {
 
     try {
         // Fetch video as blob with JWT auth header
-        const response = await fetch(`/api/videos/${videoId}/stream`, {
+        const response = await fetch(`http://localhost:8080/api/videos/${videoId}/stream`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`

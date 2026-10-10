@@ -20,7 +20,7 @@ async function loadAssignmentInfo() {
     const assignmentId = document.getElementById('assignmentId');
 
     try {
-        const response = await fetch(`/api/teacher/assignments/${currentAssignmentId}`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/assignments/${currentAssignmentId}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -44,7 +44,7 @@ async function loadSubmissions() {
     const submissionsList = document.getElementById('submissionsList');
 
     try {
-        const response = await fetch(`/api/teacher/assignments/${currentAssignmentId}/submissions`, {
+        const response = await fetch(`http://localhost:8080/api/teacher/assignments/${currentAssignmentId}/submissions`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });

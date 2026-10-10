@@ -6,7 +6,7 @@
  * - Provides clean error messages to catch blocks
  */
 (function() {
-  const BASE_URL = window.API_BASE_URL || '';
+  const BASE_URL = window.API_BASE_URL || 'http://localhost:8080';
 
   function getToken() {
     return localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken') ||

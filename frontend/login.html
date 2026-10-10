@@ -4,127 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign In — E-Learning Platform</title>
-    <meta name="description" content="Sign in to your role-based university e-learning portal.">
-    <meta property="og:title" content="Sign In — E-Learning Platform">
-    <meta property="og:description" content="Sign in to your role-based university e-learning portal.">
+    <meta name="description" content="Sign in to your e-learning account.">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="auth-page">
-    <!-- Navbar Header -->
-    <header class="auth-navbar">
-        <a href="index.html" class="navbar-brand">
-            <span>⚡ EduPlatform</span>
-        </a>
-        <div class="flex items-center gap-3">
-            <button id="themeToggle" class="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">🌓</button>
-            <a href="index.html" class="btn btn-secondary btn-sm">&larr; Back to Home</a>
-        </div>
-    </header>
-
-    <!-- Main Auth Container -->
-    <main class="auth-body-container">
-        <div class="auth-box">
-            <h1 class="auth-header-title">Welcome Back</h1>
-            <p class="auth-header-desc">Select your role to sign into your university learning portal</p>
-
-            <!-- Role Selector Tabs -->
-            <div class="role-tabs" role="tablist" aria-label="Login Roles">
-                <button type="button" class="role-tab-btn active" id="tabStudent" data-role="STUDENT" role="tab" aria-selected="true">
-                    <span>🎓</span> Student
-                </button>
-                <button type="button" class="role-tab-btn" id="tabTeacher" data-role="TEACHER" role="tab" aria-selected="false">
-                    <span>👨‍🏫</span> Faculty
-                </button>
-                <button type="button" class="role-tab-btn" id="tabAdmin" data-role="ADMIN" role="tab" aria-selected="false">
-                    <span>🏛️</span> Admin
-                </button>
-            </div>
-
-            <!-- Role Context & Auto-Fill Banner -->
-            <div class="role-badge-context" id="roleBadgeContext">
-                <div class="role-badge-context-text" id="roleContextDesc">
-                    <span>🎓</span> Student Portal: Access Live Classes & Coursework
-                </div>
-                <button type="button" class="role-auto-fill-btn" id="autoFillBtn" title="Fill test credentials for this role">
-                    ⚡ Auto-Fill Demo
-                </button>
-            </div>
-
-            <!-- Login Form -->
-            <form id="loginForm" autocomplete="on">
-                <!-- Email Field -->
-                <div class="input-field-group">
-                    <label for="email" class="input-field-label">
-                        <span>University Email Address</span>
-                    </label>
-                    <div class="input-control-box">
-                        <span class="leading-icon">✉️</span>
-                        <input type="email" id="email" name="email" placeholder="student@university.edu" required autocomplete="email">
-                    </div>
-                </div>
-
-                <!-- Password Field -->
-                <div class="input-field-group">
-                    <label for="password" class="input-field-label">
-                        <span>Account Password</span>
-                        <a href="javascript:void(0)" onclick="forgotPasswordHelper()" style="font-size:0.75rem; color:var(--primary);">Forgot?</a>
-                    </label>
-                    <div class="input-control-box">
-                        <span class="leading-icon">🔒</span>
-                        <input type="password" id="password" name="password" placeholder="••••••••" required autocomplete="current-password">
-                        <button type="button" class="password-reveal-btn" id="togglePasswordBtn" aria-label="Show password" title="Toggle password visibility">
-                            👁️
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Remember Me & State -->
-                <div class="flex items-center justify-between" style="margin-bottom: var(--space-4); font-size: 0.8rem;">
-                    <label class="flex items-center gap-2" style="cursor: pointer; user-select: none;">
-                        <input type="checkbox" id="rememberMe" checked>
-                        <span>Remember this device</span>
-                    </label>
-                    <span id="roleIndicatorBadge" class="badge badge-success">Student Portal</span>
-                </div>
-
-                <!-- Submit Button -->
-                <button type="submit" id="submitBtn" class="btn btn-primary auth-submit-btn">
-                    <span id="submitBtnText">Sign In to Student Portal</span> &rarr;
-                </button>
+<body class="public-page">
+    <div class="public-container">
+        <h1>E-Learning Platform</h1>
+        <div class="form-box">
+            <h2>Welcome Back</h2>
+            <p class="form-subtitle">Sign in to enter your learning portal</p>
+            <form id="loginForm">
+                <input type="email"    id="email"    placeholder="Email Address"  required autocomplete="email">
+                <input type="password" id="password" placeholder="Password"       required autocomplete="current-password">
+                <button type="submit"  id="submitBtn">Sign In</button>
             </form>
-
-            <p id="message" class="form-message" style="margin-top: 12px; text-align: center; font-size: 0.85rem; font-weight: 500;"></p>
-
-            <!-- Direct 1-Click Instant Bypass -->
-            <div style="margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border-color); text-align: center;">
-                <p style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px;">
-                    1-Click Direct Persona Access:
-                </p>
-                <div class="flex items-center justify-center gap-2" style="flex-wrap: wrap;">
-                    <button type="button" class="btn btn-sm btn-outline" onclick="instantLogin('student@university.edu','password123','student-dashboard.html')" style="font-size: 0.75rem; padding: 4px 10px;">
-                        🎓 Student (Ada)
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline" onclick="instantLogin('teacher@university.edu','password123','teacher-dashboard.html')" style="font-size: 0.75rem; padding: 4px 10px;">
-                        👨‍🏫 Faculty (Alan)
-                    </button>
-                    <button type="button" class="btn btn-sm btn-outline" onclick="instantLogin('admin@university.edu','password123','admin-dashboard.html')" style="font-size: 0.75rem; padding: 4px 10px;">
-                        🏛️ Admin (System)
-                    </button>
-                </div>
-            </div>
-
-            <!-- Switch to Registration -->
-            <div style="margin-top: 18px; text-align: center; font-size: 0.85rem; color: var(--text-muted);">
-                Don't have a campus account? <a href="register.html" style="font-weight: 700; color: var(--primary);">Create an Account</a>
+            <p id="message" class="form-message"></p>
+            <div class="form-footer">
+                Don't have an account? <a href="register.html">Sign Up</a>
             </div>
         </div>
-    </main>
-
-    <!-- Scripts -->
+        <div class="back-home"><a href="index.html">&larr; Back to Home</a></div>
+    </div>
+    <script src="js/login.js"></script>
     <script src="js/toast.js"></script>
     <script src="js/api.js"></script>
-    <script src="js/login.js"></script>
 </body>
 </html>

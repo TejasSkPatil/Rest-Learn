@@ -18,7 +18,7 @@ async function loadResources() {
     const resourcesList = document.getElementById('resourcesList');
 
     try {
-        const response = await fetch(`/api/modules/${currentModuleId}/resources`, {
+        const response = await fetch(`http://localhost:8080/api/modules/${currentModuleId}/resources`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +50,7 @@ async function downloadResource(resourceId, title) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`/api/resources/${resourceId}/download`, {
+        const response = await fetch(`http://localhost:8080/api/resources/${resourceId}/download`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`
