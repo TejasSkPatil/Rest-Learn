@@ -19,7 +19,7 @@ async function loadLiveClassInfo() {
     const messageEl = document.getElementById('message');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/teacher/live-classes/${currentLiveClassId}`, {
+        const response = await fetch(`/api/teacher/live-classes/${currentLiveClassId}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -50,7 +50,7 @@ async function loadAttendance() {
     const messageEl = document.getElementById('message');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/teacher/live-classes/${currentLiveClassId}/attendance`, {
+        const response = await fetch(`/api/teacher/live-classes/${currentLiveClassId}/attendance`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -93,7 +93,7 @@ function markAllPresent() {
     
     if (!currentLiveClassId) return;
     
-    fetch(`http://localhost:8080/api/teacher/live-classes/${currentLiveClassId}/attendance/mark-all-present`, {
+    fetch(`/api/teacher/live-classes/${currentLiveClassId}/attendance/mark-all-present`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
     })
@@ -114,7 +114,7 @@ function toggleAttendanceStatus(rowId, currentStatus) {
     // Send API call to update attendance
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
     
-    fetch(`http://localhost:8080/api/teacher/live-classes/${currentLiveClassId}/attendance`, {
+    fetch(`/api/teacher/live-classes/${currentLiveClassId}/attendance`, {
         method: 'PUT',
         headers: { 
             'Authorization': `Bearer ${token}`,

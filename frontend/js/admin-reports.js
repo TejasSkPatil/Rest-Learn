@@ -7,7 +7,7 @@ async function loadOverview() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/reports/overview', {
+        const response = await fetch('/api/admin/reports/overview', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });

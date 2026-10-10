@@ -1,5 +1,16 @@
 // layout.js — Shared layout injector + Route Guard + Theme Manager
 (function() {
+  // Clean up any injected div#aiext-menu-host
+  function purgeAiExtHost() {
+    var el = document.getElementById("aiext-menu-host");
+    if (el) el.remove();
+  }
+  purgeAiExtHost();
+  if (window.MutationObserver) {
+    var obs = new MutationObserver(purgeAiExtHost);
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+  }
+
   // 1. Initialize Theme early
   const savedTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
@@ -32,8 +43,85 @@
     }
   };
 
+  /* ── Sidebar Open / Close Controls ─────────────────────────────── */
+  function openSidebar() {
+    var sidebar = document.querySelector(".sidebar");
+    var overlay = ensureOverlay();
+    if (sidebar) sidebar.classList.add("open");
+    if (overlay) overlay.classList.add("active");
+  }
+
+  function closeSidebar() {
+    var sidebar = document.querySelector(".sidebar");
+    var overlay = document.getElementById("sidebarOverlay");
+    if (sidebar) sidebar.classList.remove("open");
+    if (overlay) overlay.classList.remove("active");
+  }
+
+  function toggleSidebar() {
+    var sidebar = document.querySelector(".sidebar");
+    if (sidebar && sidebar.classList.contains("open")) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
+  }
+
+  function ensureOverlay() {
+    var overlay = document.getElementById("sidebarOverlay");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "sidebarOverlay";
+      overlay.className = "sidebar-overlay";
+      overlay.addEventListener("click", closeSidebar);
+      document.body.appendChild(overlay);
+    }
+    return overlay;
+  }
+
+  window.openSidebar = openSidebar;
+  window.closeSidebar = closeSidebar;
+  window.toggleSidebar = toggleSidebar;
+
+  /* Global click delegation for navbar brand span and sidebar links */
+  document.addEventListener("click", function(e) {
+    // 1. Click on span inside navbar brand -> open/toggle aside component
+    var brandSpan = e.target.closest("#navbar nav a span, nav.navbar a.navbar-brand span");
+    if (brandSpan) {
+      e.preventDefault();
+      e.stopPropagation();
+      toggleSidebar();
+      return;
+    }
+
+    // 2. Click on 'a' component inside aside -> automatically close aside component
+    var asideLink = e.target.closest("#sidebar aside a, aside.sidebar a");
+    if (asideLink) {
+      closeSidebar();
+      return;
+    }
+
+    // 3. Click on sidebar close button
+    if (e.target.closest("#sidebarCloseBtn")) {
+      e.preventDefault();
+      closeSidebar();
+      return;
+    }
+
+    // 4. Click on overlay
+    if (e.target.id === "sidebarOverlay" || e.target.classList.contains("sidebar-overlay")) {
+      closeSidebar();
+      return;
+    }
+  });
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeSidebar();
+  });
+
   /* ── Layout Injection ───────────────────────────────────────────── */
   document.addEventListener("DOMContentLoaded", function() {
+    ensureOverlay();
     var navEl  = document.getElementById("navbar");
     var sideEl = document.getElementById("sidebar");
     if (navEl) {

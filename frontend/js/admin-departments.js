@@ -13,7 +13,7 @@ async function loadDepartments() {
     const tableBody = document.getElementById('departmentsTableBody');
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/departments', {
+        const response = await fetch('/api/admin/departments', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -54,7 +54,7 @@ async function createDepartment() {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/departments', {
+        const response = await fetch('/api/admin/departments', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ async function deleteDepartment(id) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/admin/departments/${id}`, {
+        const response = await fetch(`/api/admin/departments/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });

@@ -1,0 +1,7 @@
+{
+  "name": "E-Learning Platform",
+  "description": "A role-based university e-learning platform for admins, teachers and students.",
+  "capabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

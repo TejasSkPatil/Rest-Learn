@@ -3,38 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up — E-Learning Platform</title>
-    <meta name="description" content="Create your e-learning account.">
+    <title>Create Account — E-Learning Platform</title>
+    <meta name="description" content="Register your university student or faculty account.">
+    <meta property="og:title" content="Create Account — E-Learning Platform">
+    <meta property="og:description" content="Register your university student or faculty account.">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="public-page">
-    <div class="public-container">
-        <h1>E-Learning Platform</h1>
-        <div class="form-box">
-            <h2>Create Account</h2>
-            <p class="form-subtitle">Sign up to get started as a Student or Teacher</p>
-            <form id="registerForm">
-                <input type="text"     id="name"     placeholder="Full Name"      required autocomplete="name">
-                <input type="email"    id="email"    placeholder="Email Address"  required autocomplete="email">
-                <input type="password" id="password" placeholder="Password"       required autocomplete="new-password">
-                <select id="role" required>
-                    <option value="">Select Your Role</option>
-                    <option value="STUDENT">Student</option>
-                    <option value="TEACHER">Teacher</option>
-                </select>
-                <button type="submit" id="registerBtn">Create Account</button>
+<body class="auth-page">
+    <!-- Navbar Header -->
+    <header class="auth-navbar">
+        <a href="index.html" class="navbar-brand">
+            <span>⚡ EduPlatform</span>
+        </a>
+        <div class="flex items-center gap-3">
+            <button id="themeToggle" class="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme">🌓</button>
+            <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+            <a href="index.html" class="btn btn-secondary btn-sm">&larr; Home</a>
+        </div>
+    </header>
+
+    <!-- Main Auth Container -->
+    <main class="auth-body-container">
+        <div class="auth-box" style="max-width: 540px;">
+            <h1 class="auth-header-title">Create Campus Account</h1>
+            <p class="auth-header-desc">Select your role and enter your credentials to join the university platform</p>
+
+            <!-- Role Choice Interactive Cards -->
+            <label class="input-field-label" style="margin-bottom: 8px;">
+                <span>Choose Your Campus Role</span>
+            </label>
+            <div class="role-register-cards">
+                <div class="role-choice-card selected" id="roleCardStudent" data-role="STUDENT">
+                    <div style="font-size: 1.75rem;">🎓</div>
+                    <h4>Student</h4>
+                    <p>Enroll with course codes, attend live sessions, submit coursework, and earn certificates.</p>
+                </div>
+
+                <div class="role-choice-card" id="roleCardTeacher" data-role="TEACHER">
+                    <div style="font-size: 1.75rem;">👨‍🏫</div>
+                    <h4>Faculty / Teacher</h4>
+                    <p>Build modular curriculum, schedule live classes, mark attendance, and evaluate submissions.</p>
+                </div>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registerForm" autocomplete="on">
+                <input type="hidden" id="role" name="role" value="STUDENT">
+
+                <!-- Full Name -->
+                <div class="input-field-group">
+                    <label for="name" class="input-field-label">
+                        <span>Full Legal Name</span>
+                    </label>
+                    <div class="input-control-box">
+                        <span class="leading-icon">👤</span>
+                        <input type="text" id="name" name="name" placeholder="e.g. Ada Lovelace" required autocomplete="name">
+                    </div>
+                </div>
+
+                <!-- Email Address -->
+                <div class="input-field-group">
+                    <label for="email" class="input-field-label">
+                        <span>University Email Address</span>
+                    </label>
+                    <div class="input-control-box">
+                        <span class="leading-icon">✉️</span>
+                        <input type="email" id="email" name="email" placeholder="e.g. ada@university.edu" required autocomplete="email">
+                    </div>
+                </div>
+
+                <!-- Academic Department -->
+                <div class="input-field-group">
+                    <label for="department" class="input-field-label">
+                        <span>Academic Department</span>
+                    </label>
+                    <div class="input-control-box">
+                        <span class="leading-icon">🏛️</span>
+                        <select id="department" name="department">
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Electrical Engineering">Electrical Engineering</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="input-field-group">
+                    <label for="password" class="input-field-label">
+                        <span>Account Password</span>
+                        <span style="font-size: 0.72rem; color: var(--text-muted);">Min. 6 characters</span>
+                    </label>
+                    <div class="input-control-box">
+                        <span class="leading-icon">🔒</span>
+                        <input type="password" id="password" name="password" placeholder="Create secure password" required minlength="6" autocomplete="new-password">
+                        <button type="button" class="password-reveal-btn" id="toggleRegPasswordBtn" aria-label="Toggle password" title="Toggle password visibility">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="input-field-group">
+                    <label for="confirmPassword" class="input-field-label">
+                        <span>Confirm Password</span>
+                        <span id="pwdMatchStatus" style="font-size: 0.72rem; font-weight: 600;"></span>
+                    </label>
+                    <div class="input-control-box">
+                        <span class="leading-icon">🔒</span>
+                        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Re-enter password" required minlength="6" autocomplete="new-password">
+                    </div>
+                </div>
+
+                <!-- Academic Honor Code Agreement -->
+                <div style="margin-bottom: var(--space-4); font-size: 0.8rem;">
+                    <label class="flex items-center gap-2" style="cursor: pointer; user-select: none;">
+                        <input type="checkbox" id="agreeTerms" required checked>
+                        <span>I agree to the university honor code and acceptable use policy.</span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="registerBtn" class="btn btn-primary auth-submit-btn">
+                    <span id="registerBtnText">Create Student Account</span> &rarr;
+                </button>
             </form>
-            <p id="message" class="form-message"></p>
-            <div class="form-footer">
-                Already have an account? <a href="login.html">Sign In</a>
+
+            <p id="message" class="form-message" style="margin-top: 12px; text-align: center; font-size: 0.85rem; font-weight: 500;"></p>
+
+            <!-- Switch to Login -->
+            <div style="margin-top: 18px; text-align: center; font-size: 0.85rem; color: var(--text-muted);">
+                Already have an account? <a href="login.html" style="font-weight: 700; color: var(--primary);">Sign In to Portal</a>
             </div>
         </div>
-        <div class="back-home"><a href="index.html">&larr; Back to Home</a></div>
-    </div>
-    <script src="js/script.js"></script>
+    </main>
+
+    <!-- Scripts -->
     <script src="js/toast.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/script.js"></script>
 </body>
 </html>
