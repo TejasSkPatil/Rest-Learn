@@ -1,8 +1,41 @@
-// layout.js — Shared layout injector + Route Guard + Theme Manager
+// layout.js — Shared layout injector + Route Guard + Theme Manager + Sidebar Drawer Controller
 (function() {
   // 1. Initialize Theme early
   const savedTheme = localStorage.getItem('theme') || 'light';
   document.documentElement.setAttribute('data-theme', savedTheme);
+
+  /* ── Sidebar Drawer Helper Functions ────────────────────────────── */
+  function openSidebar() {
+    var sb = document.querySelector(".sidebar");
+    var overlay = document.getElementById("sidebarOverlay");
+    if (sb) sb.classList.add("open");
+    if (overlay) overlay.classList.add("open");
+  }
+
+  function closeSidebar() {
+    var sb = document.querySelector(".sidebar");
+    var overlay = document.getElementById("sidebarOverlay");
+    if (sb) sb.classList.remove("open");
+    if (overlay) overlay.classList.remove("open");
+  }
+
+  function toggleSidebar() {
+    var sb = document.querySelector(".sidebar");
+    if (!sb) return;
+    if (sb.classList.contains("open")) {
+      closeSidebar();
+    } else {
+      openSidebar();
+    }
+  }
+
+  window.openSidebar = openSidebar;
+  window.closeSidebar = closeSidebar;
+  window.toggleSidebar = toggleSidebar;
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeSidebar();
+  });
 
   /* ── Route Guard ────────────────────────────────────────────────── */
   window.requireAuth = function(allowedRoles) {
@@ -52,8 +85,27 @@
 
   /* ── Navbar Initialiser ─────────────────────────────────────────── */
   function initNavbar() {
+    // 1. Toggle Sidebar on Brand Link / Span click
+    var brandLink = document.querySelector("#navbar .navbar-brand");
+    var brandSpan = document.querySelector("#navbar .navbar-brand span");
 
-    // Notification Dropdown Logic
+    if (brandSpan) {
+      brandSpan.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleSidebar();
+      });
+    }
+
+    if (brandLink) {
+      brandLink.addEventListener("click", function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleSidebar();
+      });
+    }
+
+    // 2. Notification Dropdown Logic
     var bellBtn = document.getElementById("notifBellBtn");
     var notifMenu = document.getElementById("notifMenu");
     var notifBadge = document.getElementById("notifBadge");
@@ -72,6 +124,8 @@
         }
       });
     }
+
+    var token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken") || localStorage.getItem("token");
 
     async function loadNotifications() {
       if (!window.api || !token) return;
@@ -92,7 +146,6 @@
     }
     if (token) loadNotifications();
 
-    var token     = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken") || localStorage.getItem("token");
     var authEl    = document.getElementById("authButtons");
     var greetEl   = document.getElementById("userGreeting");
     var nameEl    = document.getElementById("userName");
@@ -151,8 +204,10 @@
     if (!token) { var s = document.querySelector(".sidebar"); if (s) s.style.display = "none"; return; }
     var role = "";
     try { role = JSON.parse(atob(token.split(".")[1].replace(/-/g,"+").replace(/_/g,"/"))).role || ""; } catch(e){ return; }
+
     var navLinks = document.querySelector(".sidebar-nav");
     if (!navLinks) return;
+
     var allItems = {
       ADMIN:[
         {l:"📊 Dashboard",h:"admin-dashboard.html"},{l:"👥 Users",h:"admin-users.html"},
@@ -177,5 +232,30 @@
       html += '<li><a href="' + it.h + '"' + active + '>' + it.l + '</a></li>';
     });
     navLinks.innerHTML = html;
+
+    // Close button & overlay listeners
+    var closeBtn = document.getElementById("closeSidebarBtn");
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function(e) {
+        e.stopPropagation();
+        closeSidebar();
+      });
+    }
+
+    var overlay = document.getElementById("sidebarOverlay");
+    if (overlay) {
+      overlay.addEventListener("click", function(e) {
+        e.stopPropagation();
+        closeSidebar();
+      });
+    }
+
+    // When user clicks on any 'a' link in the sidebar, that component/page opens AND aside closes
+    navLinks.addEventListener("click", function(e) {
+      var a = e.target.closest("a");
+      if (a) {
+        closeSidebar();
+      }
+    });
   }
 })();

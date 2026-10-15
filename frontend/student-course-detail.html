@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Portal — Student</title>
+    <meta name="description" content="Access lecture videos, assignments, and study materials for enrolled students.">
+    <link rel="stylesheet" href="css/design-system.css">
+    <link rel="stylesheet" href="css/toast.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="navbar"></div>
+    <div id="sidebar"></div>
+
+    <main class="page-container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
+        <!-- Breadcrumbs & Header -->
+        <div style="margin-bottom: var(--space-6);">
+            <div style="font-size: var(--font-size-xs); color: var(--text-muted); margin-bottom: var(--space-2); display: flex; align-items: center; gap: 6px;">
+                <a href="student-dashboard.html" style="color: inherit; text-decoration: none;">Dashboard</a>
+                <span>/</span>
+                <a href="student-dashboard.html" style="color: inherit; text-decoration: none;">My Courses</a>
+                <span>/</span>
+                <span id="breadcrumbTitle" style="color: var(--primary); font-weight: 600;">Course</span>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
+                <div>
+                    <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2); flex-wrap: wrap;">
+                        <span id="courseCodeBadge" class="badge badge-primary">CS101</span>
+                        <span id="courseSemesterBadge" class="badge badge-neutral">Fall 2026</span>
+                        <span id="enrollmentStatusBadge" class="badge badge-success">✓ Enrolled</span>
+                    </div>
+                    <h1 id="courseNameTitle" style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin: 0;">
+                        Loading Course...
+                    </h1>
+                    <p id="courseInstructorText" style="color: var(--text-muted); font-size: var(--font-size-sm); margin-top: 4px;">
+                        Instructor: <strong id="teacherName">...</strong> &bull; Dept: <span id="deptName">...</span>
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: var(--space-2); align-items: center;">
+                    <a href="student-dashboard.html" class="btn btn-outline btn-sm">&larr; Back to My Courses</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lock Screen for Not-Enrolled Students -->
+        <div id="lockedScreen" class="card" style="display: none; max-width: 580px; margin: 40px auto; text-align: center; padding: var(--space-8);">
+            <div style="font-size: 3rem; margin-bottom: var(--space-3);">🔒</div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-main); margin-bottom: var(--space-2);">Enrollment Required</h2>
+            <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin-bottom: var(--space-6); line-height: 1.5;">
+                You are not currently enrolled in this course section. Enter your instructor's 8-character access code below to unlock lecture videos and assignments:
+            </p>
+
+            <form id="enrollCourseForm" style="display: flex; gap: 8px; justify-content: center; max-width: 380px; margin: 0 auto;">
+                <input type="text" id="joinEnrollmentCodeInput" class="input" placeholder="e.g. ALGO2026" style="text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em;" required>
+                <button type="submit" class="btn btn-primary" style="white-space: nowrap;">Enroll Now</button>
+            </form>
+        </div>
+
+        <!-- Enrolled Course Content Container -->
+        <div id="enrolledCourseContent">
+            <!-- Active Video Player Box (Top Featured on View) -->
+            <div id="activePlayerBox" class="card" style="display: none; margin-bottom: var(--space-6); background: var(--bg-surface); border: 2px solid var(--primary); overflow: hidden; padding: 0; box-shadow: var(--shadow-lg);">
+                <div style="position: relative; background: #000;">
+                    <video id="studentVideoPlayer" controls playsinline style="width: 100%; max-height: 500px; display: block;"></video>
+                </div>
+                <div style="padding: var(--space-4) var(--space-6); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; background: var(--bg-surface);">
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                            <span class="badge badge-success">Now Streaming</span>
+                            <span id="nowPlayingModule" class="badge badge-neutral">Lecture Video</span>
+                        </div>
+                        <h3 id="nowPlayingTitle" style="font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-main);">Lecture Video</h3>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span id="nowPlayingDuration" class="badge badge-neutral">Duration: 20:00</span>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('activePlayerBox').style.display='none'">✕ Hide Player</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs & View Filters -->
+            <div class="tabs-header" style="margin-bottom: var(--space-6);">
+                <button class="tab-btn active" data-tab="allMaterialsTab">
+                    <span>🌟 All Materials (Videos & Assignments)</span>
+                </button>
+                <button class="tab-btn" data-tab="videosOnlyTab">
+                    <span>📹 Lecture Videos</span>
+                    <span id="videosTabCount" class="badge badge-neutral" style="font-size: 0.7rem; margin-left: 4px;">0</span>
+                </button>
+                <button class="tab-btn" data-tab="assignmentsOnlyTab">
+                    <span>📝 Course Assignments</span>
+                    <span id="assignmentsTabCount" class="badge badge-neutral" style="font-size: 0.7rem; margin-left: 4px;">0</span>
+                </button>
+                <button class="tab-btn" data-tab="overviewTab">
+                    <span>📄 Syllabus & Details</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: ALL MATERIALS (DIRECT VIEW OF BOTH VIDEOS AND ASSIGNMENTS) -->
+            <section id="allMaterialsTab" class="tab-panel active">
+                <!-- Section A: Videos -->
+                <div style="margin-bottom: var(--space-8);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+                        <div>
+                            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px;">
+                                <span>📹</span> <span>Lecture Videos</span>
+                            </h2>
+                            <p style="color: var(--text-muted); font-size: var(--font-size-xs); margin: 2px 0 0;">
+                                Select any video lecture below to stream in high definition.
+                            </p>
+                        </div>
+                        <span id="allVideosCountBadge" class="badge badge-primary">0 Videos</span>
+                    </div>
+
+                    <div id="allVideosGrid" class="grid grid-3">
+                        <div class="loading-container" style="grid-column: 1 / -1;">
+                            <div class="spinner"></div><span>Loading course videos...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section B: Assignments -->
+                <div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">
+                        <div>
+                            <h2 style="font-size: 1.35rem; font-weight: 800; color: var(--text-main); margin: 0; display: flex; align-items: center; gap: 8px;">
+                                <span>📝</span> <span>Course Assignments</span>
+                            </h2>
+                            <p style="color: var(--text-muted); font-size: var(--font-size-xs); margin: 2px 0 0;">
+                                Complete deliverables, track due dates, and submit your homework solutions.
+                            </p>
+                        </div>
+                        <span id="allAssignmentsCountBadge" class="badge badge-success">0 Assignments</span>
+                    </div>
+
+                    <div id="allAssignmentsList" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                        <div class="loading-container">
+                            <div class="spinner"></div><span>Loading course assignments...</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: VIDEOS ONLY -->
+            <section id="videosOnlyTab" class="tab-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                    <div>
+                        <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0;">Lecture Videos</h2>
+                        <p style="color: var(--text-muted); font-size: var(--font-size-xs); margin: 2px 0 0;">Click any video card below to stream immediately.</p>
+                    </div>
+                </div>
+                <div id="studentVideosGrid" class="grid grid-3">
+                    <div class="loading-container" style="grid-column: 1 / -1;">
+                        <div class="spinner"></div><span>Loading course videos...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: ASSIGNMENTS ONLY -->
+            <section id="assignmentsOnlyTab" class="tab-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                    <div>
+                        <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0;">Coursework & Assignments</h2>
+                        <p style="color: var(--text-muted); font-size: var(--font-size-xs); margin: 2px 0 0;">View instructions, deliverables, and submit solutions.</p>
+                    </div>
+                </div>
+                <div id="studentAssignmentsList" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                    <div class="loading-container">
+                        <div class="spinner"></div><span>Loading course assignments...</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: SYLLABUS -->
+            <section id="overviewTab" class="tab-panel">
+                <div class="card" style="padding: var(--space-6);">
+                    <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-bottom: var(--space-3);">Syllabus & Course Objectives</h3>
+                    <p id="studentCourseDesc" style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        No description provided.
+                    </p>
+
+                    <div style="border-top: 1px solid var(--border-color); margin-top: var(--space-6); padding-top: var(--space-4); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+                        <div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Instructor</span>
+                            <strong id="overviewTeacherName" style="display: block; color: var(--text-main); margin-top: 2px;">Faculty</strong>
+                        </div>
+                        <div>
+                            <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Academic Department</span>
+                            <strong id="overviewDeptName" style="display: block; color: var(--text-main); margin-top: 2px;">General</strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Student Assignment Submission Modal -->
+    <div id="studentSubmitModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="width: 100%; max-width: 650px; max-height: 90vh; overflow-y: auto; padding: var(--space-6); background: var(--bg-surface); box-shadow: var(--shadow-xl);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <div>
+                    <h3 id="modalAssignmentTitle" style="font-size: 1.25rem; font-weight: 800; margin: 0; color: var(--text-main);">Submit Assignment</h3>
+                    <p id="modalAssignmentMeta" style="font-size: 0.8rem; color: var(--text-muted); margin: 2px 0 0;">Due date & points</p>
+                </div>
+                <button id="closeSubmitModalBtn" class="theme-toggle-btn" style="width: 32px; height: 32px;">✕</button>
+            </div>
+
+            <!-- Existing submission notice if any -->
+            <div id="existingSubmissionNotice" style="display: none; padding: 12px; background: var(--primary-light); border-left: 4px solid var(--primary); border-radius: var(--radius-md); margin-bottom: 16px; font-size: 0.85rem; color: var(--text-main);">
+                <strong>✓ Previously Submitted:</strong> <span id="existingSubDate"></span>
+                <div id="existingGradeDisplay" style="margin-top: 4px; font-weight: 700;"></div>
+            </div>
+
+            <form id="assignmentSubmissionForm">
+                <input type="hidden" id="submitAssignmentId" value="">
+
+                <div class="form-group" style="margin-bottom: var(--space-4);">
+                    <label class="form-label" for="submissionTextAnswer">Your Solution / Text Response *</label>
+                    <textarea id="submissionTextAnswer" class="textarea" rows="5" placeholder="Type your answer, methodology, code, or explanation here..." required></textarea>
+                </div>
+
+                <div class="form-group" style="margin-bottom: var(--space-6);">
+                    <label class="form-label" for="submissionAttachmentFile">Attach File (Optional: .pdf, .zip, .docx, images)</label>
+                    <input type="file" id="submissionAttachmentFile" class="input" style="padding: 8px;">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: var(--space-3);">
+                    <button type="button" id="cancelSubmitModalBtn" class="btn btn-outline">Cancel</button>
+                    <button type="submit" id="submitSolutionBtn" class="btn btn-primary">
+                        Submit Solution &rarr;
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Route Guard for Student & Admin
+        (function() {
+            var token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
+            if (!token) { window.location.href = "login.html"; return; }
+            try {
+                var p = JSON.parse(atob(token.split(".")[1].replace(/-/g,"+").replace(/_/g,"/")));
+                if (p.exp && Date.now()/1000 > p.exp) {
+                    localStorage.removeItem("jwtToken"); sessionStorage.removeItem("jwtToken");
+                    window.location.href = "login.html?reason=expired";
+                    return;
+                }
+                var role = p.role || "";
+                if (role !== "STUDENT" && role !== "ADMIN") {
+                    window.location.href = role === "TEACHER" ? "teacher-dashboard.html" : "login.html";
+                }
+            } catch(e) { window.location.href = "login.html"; }
+        })();
+    </script>
+    <script src="js/toast.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/layout.js"></script>
+    <script src="js/student-course-detail.js"></script>
+</body>
+</html>

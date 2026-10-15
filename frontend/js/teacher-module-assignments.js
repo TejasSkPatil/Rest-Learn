@@ -23,7 +23,7 @@ async function loadAssignments() {
     const assignmentsList = document.getElementById('assignmentsList');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/assignments`, {
+        const response = await fetch(`/api/teacher/modules/${currentModuleId}/assignments`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ async function createAssignment() {
     };
 
     try {
-        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/assignments`, {
+        const response = await fetch(`/api/teacher/modules/${currentModuleId}/assignments`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ async function deleteAssignment(assignmentId) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/teacher/modules/${currentModuleId}/assignments/${assignmentId}`, {
+        const response = await fetch(`/api/teacher/modules/${currentModuleId}/assignments/${assignmentId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${token}`

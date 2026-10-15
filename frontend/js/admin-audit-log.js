@@ -8,7 +8,7 @@ async function loadAuditLog() {
     const tableBody = document.getElementById('auditLogBody');
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/audit-log', {
+        const response = await fetch('/api/admin/audit-log', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });

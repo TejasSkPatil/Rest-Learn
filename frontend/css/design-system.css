@@ -570,18 +570,70 @@ a:hover {
   transform: rotate(15deg);
 }
 
+/* Navbar Brand & Toggle Span */
+.navbar-brand span {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  user-select: none;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.navbar-brand span:hover {
+  background-color: var(--primary-light);
+  transform: translateY(-1px);
+}
+
+.navbar-brand span:active {
+  transform: translateY(0);
+}
+
+/* Sidebar Drawer */
 .sidebar {
   position: fixed;
   top: 72px;
   left: 0;
   bottom: 0;
-  width: 260px;
+  width: 280px;
   background: var(--bg-surface);
   border-right: 1px solid var(--border-color);
   padding: var(--space-6) var(--space-4);
   overflow-y: auto;
-  z-index: 40;
-  transition: all var(--transition-normal);
+  z-index: 1000;
+  transform: translateX(-100%);
+  opacity: 0;
+  visibility: hidden;
+  box-shadow: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, visibility 0.3s;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+  opacity: 1;
+  visibility: visible;
+  box-shadow: var(--shadow-xl);
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.45);
+  backdrop-filter: blur(2px);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0.25s;
+}
+
+.sidebar-overlay.open {
+  opacity: 1;
+  visibility: visible;
 }
 
 .sidebar-nav {
@@ -595,18 +647,20 @@ a:hover {
   display: flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 0.625rem 0.875rem;
+  padding: 0.75rem 1rem;
   border-radius: var(--radius-md);
   color: var(--text-muted);
   font-weight: 500;
   font-size: var(--font-size-sm);
   transition: all var(--transition-fast);
   text-decoration: none;
+  cursor: pointer;
 }
 
 .sidebar-nav a:hover {
   color: var(--text-main);
   background-color: var(--bg-surface-alt);
+  transform: translateX(4px);
 }
 
 .sidebar-nav a.active {

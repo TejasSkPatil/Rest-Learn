@@ -14,7 +14,7 @@ async function loadTimetable() {
     const container = document.getElementById('timetableContainer');
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/timetable', {
+        const response = await fetch('/api/admin/timetable', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -35,7 +35,7 @@ async function loadFormOptions() {
 
     try {
         // Load courses
-        const coursesRes = await fetch('http://localhost:8080/api/admin/courses', {
+        const coursesRes = await fetch('/api/admin/courses', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (coursesRes.ok) {
@@ -44,7 +44,7 @@ async function loadFormOptions() {
         }
 
         // Load sessions
-        const sessionsRes = await fetch('http://localhost:8080/api/admin/academic-sessions', {
+        const sessionsRes = await fetch('/api/admin/academic-sessions', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (sessionsRes.ok) {
@@ -53,7 +53,7 @@ async function loadFormOptions() {
         }
 
         // Load teachers
-        const usersRes = await fetch('http://localhost:8080/api/admin/users', {
+        const usersRes = await fetch('/api/admin/users', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         if (usersRes.ok) {
@@ -81,7 +81,7 @@ async function createEntry() {
     };
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/timetable', {
+        const response = await fetch('/api/admin/timetable', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

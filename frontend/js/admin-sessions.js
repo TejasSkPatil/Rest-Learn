@@ -13,7 +13,7 @@ async function loadSessions() {
     const tableBody = document.getElementById('sessionsTableBody');
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/academic-sessions', {
+        const response = await fetch('/api/admin/academic-sessions', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -58,7 +58,7 @@ async function createSession() {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/academic-sessions', {
+        const response = await fetch('/api/admin/academic-sessions', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ async function deleteSession(id) {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/admin/academic-sessions/${id}`, {
+        const response = await fetch(`/api/admin/academic-sessions/${id}`, {
             method: 'DELETE',
             headers: { 'Authorization': `Bearer ${token}` }
         });

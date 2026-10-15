@@ -3,49 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Course Detail - Teacher</title>
+    <title>Course Studio — Teacher</title>
+    <meta name="description" content="Manage course modules, upload lecture videos, and create assignments.">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin.css">
 </head>
 <body>
     <div id="navbar"></div>
     <div id="sidebar"></div>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>Course Details</h1>
-            <a href="teacher-courses.html" class="btn-action">&larr; Back to My Courses</a>
-        </div>
-
-        <div id="message"></div>
-
-        <div id="courseDetails">
-            <div class="detail-card">
-                <h2 id="courseName"></h2>
-                <p><strong>Course Code:</strong> <span id="courseCode"></span></p>
-                <p><strong>Department:</strong> <span id="courseDepartment"></span></p>
-                <p><strong>Semester:</strong> <span id="courseSemester"></span></p>
-                <p><strong>Description:</strong> <span id="courseDescription"></span></p>
-                <p><strong>Created:</strong> <span id="courseCreated"></span></p>
+    <main class="page-container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
+        <!-- Breadcrumbs & Header -->
+        <div style="margin-bottom: var(--space-6);">
+            <div style="font-size: var(--font-size-xs); color: var(--text-muted); margin-bottom: var(--space-2); display: flex; align-items: center; gap: 6px;">
+                <a href="teacher-dashboard.html" style="color: inherit; text-decoration: none;">Dashboard</a>
+                <span>/</span>
+                <a href="teacher-courses.html" style="color: inherit; text-decoration: none;">My Courses</a>
+                <span>/</span>
+                <span id="breadcrumbCourseTitle" style="color: var(--primary); font-weight: 600;">Course Details</span>
             </div>
 
-            <div class="enrollment-section">
-                <h3>Enrollment Code</h3>
-                <div class="enrollment-code-box">
-                    <code id="enrollmentCode"></code>
-                    <span id="codeStatus" class="status-badge"></span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
+                <div>
+                    <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-2);">
+                        <span id="courseCodeBadge" class="badge badge-primary" style="font-size: 0.85rem; padding: 4px 10px;">CODE</span>
+                        <span id="courseSemesterBadge" class="badge badge-neutral">Term</span>
+                        <span id="codeStatusBadge" class="badge badge-success">Enrollment Open</span>
+                    </div>
+                    <h1 id="courseNameHeader" style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin: 0;">
+                        Loading Course...
+                    </h1>
+                    <p id="courseDeptHeader" style="color: var(--text-muted); font-size: var(--font-size-sm); margin-top: 4px;">
+                        Department: <strong id="courseDeptName">...</strong>
+                    </p>
                 </div>
-                <div class="button-group">
-                    <button onclick="regenerateCode()" class="btn-action btn-reset">Regenerate Code</button>
-                    <button onclick="toggleCodeStatus()" id="toggleCodeBtn" class="btn-action"></button>
+
+                <div style="display: flex; gap: var(--space-2); flex-wrap: wrap;">
+                    <a href="teacher-courses.html" class="btn btn-outline btn-sm">&larr; Back to Courses</a>
                 </div>
+            </div>
+        </div>
+
+        <!-- Enrollment Code Banner -->
+        <div class="card" style="margin-bottom: var(--space-6); background: var(--bg-surface); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4); padding: var(--space-4) var(--space-6);">
+            <div>
+                <span style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em; display: block;">Student Enrollment Key</span>
+                <div style="display: flex; align-items: center; gap: var(--space-3); margin-top: 2px;">
+                    <code id="enrollmentCode" style="font-size: 1.4rem; font-weight: 800; color: var(--primary); font-family: monospace; letter-spacing: 0.08em;">--------</code>
+                    <button id="copyCodeBtn" class="btn btn-outline btn-sm" style="padding: 2px 8px; font-size: 0.75rem;">📋 Copy</button>
+                    <button id="regenerateCodeBtn" class="btn btn-outline btn-sm" style="padding: 2px 8px; font-size: 0.75rem;">🔄 Regenerate</button>
+                </div>
+            </div>
+
+            <!-- Stats Counts -->
+            <div style="display: flex; gap: var(--space-6); align-items: center;">
+                <div style="text-align: center;">
+                    <span id="statsVideosCount" style="font-size: 1.4rem; font-weight: 800; color: var(--primary); display: block;">0</span>
+                    <small style="color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; font-weight: 600;">Videos</small>
+                </div>
+                <div style="text-align: center;">
+                    <span id="statsAssignmentsCount" style="font-size: 1.4rem; font-weight: 800; color: var(--success); display: block;">0</span>
+                    <small style="color: var(--text-muted); font-size: 0.72rem; text-transform: uppercase; font-weight: 600;">Assignments</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="videosTab">
+                <span>📹 Course Videos</span>
+                <span id="videosTabBadge" class="badge badge-neutral" style="font-size: 0.7rem;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="assignmentsTab">
+                <span>📝 Course Assignments</span>
+                <span id="assignmentsTabBadge" class="badge badge-neutral" style="font-size: 0.7rem;">0</span>
+            </button>
+            <button class="tab-btn" data-tab="overviewTab">
+                <span>📄 Syllabus & Overview</span>
+            </button>
+        </div>
+
+        <!-- TAB 1: VIDEOS -->
+        <section id="videosTab" class="tab-panel active">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                <div>
+                    <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0;">Lecture Videos</h2>
+                    <p style="color: var(--text-muted); font-size: var(--font-size-xs); margin: 2px 0 0;">Upload lecture recordings or add streaming videos for enrolled students.</p>
+                </div>
+                <button id="toggleUploadVideoBtn" class="btn btn-primary btn-sm">
+                    + Upload New Video
+                </button>
+            </div>
+
+            <!-- Upload Video Form Card (Collapsible) -->
+            <div id="uploadVideoFormCard" class="card" style="display: none; margin-bottom: var(--space-6); border: 2px solid var(--primary); background: var(--bg-surface-alt);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin: 0;">Upload Lecture Video</h3>
+                    <button id="cancelUploadVideoBtn" class="btn btn-outline btn-sm" style="padding: 2px 8px;">✕ Cancel</button>
+                </div>
+
+                <form id="uploadVideoForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" for="videoTitle">Video Lecture Title *</label>
+                            <input type="text" id="videoTitle" class="input" placeholder="e.g. Lecture 1: Big-O Complexity & Master Theorem" required>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" for="videoDuration">Duration</label>
+                            <input type="text" id="videoDuration" class="input" placeholder="e.g. 24:15" value="20:00">
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: var(--space-4);">
+                        <label class="form-label" for="videoModuleName">Section / Module (Optional)</label>
+                        <input type="text" id="videoModuleName" class="input" placeholder="e.g. Module 1: Foundations">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: var(--space-4);">
+                        <label class="form-label" for="videoFileInput">Upload Video File (.mp4 / webm) OR specify URL</label>
+                        <input type="file" id="videoFileInput" class="input" accept="video/*" style="padding: 8px;">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">Or stream URL:</span>
+                            <input type="url" id="videoUrlInput" class="input" style="padding: 4px 8px; font-size: 0.8rem;" placeholder="https://... (leave empty for sample video)">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+                        <button type="submit" id="submitVideoBtn" class="btn btn-primary">
+                            Upload Video &rarr;
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Videos List Grid -->
+            <div id="courseVideosGrid" class="grid grid-3">
+                <div class="loading-container" style="grid-column: 1 / -1;">
+                    <div class="spinner"></div><span>Loading course videos...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ASSIGNMENTS -->
+        <section id="assignmentsTab" class="tab-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                <div>
+                    <h2 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin: 0;">Course Assignments</h2>
+                    <p style="color: var(--text-muted); font-size: var(--font-size-xs); margin: 2px 0 0;">Create tasks, specify due dates, and grade student submissions.</p>
+                </div>
+                <button id="toggleCreateAssignmentBtn" class="btn btn-primary btn-sm">
+                    + Create Assignment
+                </button>
+            </div>
+
+            <!-- Create Assignment Form Card (Collapsible) -->
+            <div id="createAssignmentFormCard" class="card" style="display: none; margin-bottom: var(--space-6); border: 2px solid var(--primary); background: var(--bg-surface-alt);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin: 0;">Create New Assignment</h3>
+                    <button id="cancelCreateAssignmentBtn" class="btn btn-outline btn-sm" style="padding: 2px 8px;">✕ Cancel</button>
+                </div>
+
+                <form id="createAssignmentForm">
+                    <div class="form-group" style="margin-bottom: var(--space-4);">
+                        <label class="form-label" for="assignmentTitle">Assignment Title *</label>
+                        <input type="text" id="assignmentTitle" class="input" placeholder="e.g. Assignment 1: Sorting Algorithm Benchmark" required>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: var(--space-4);">
+                        <label class="form-label" for="assignmentModuleName">Section / Module (Optional)</label>
+                        <input type="text" id="assignmentModuleName" class="input" placeholder="e.g. Module 1: Foundations">
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: var(--space-4);">
+                        <label class="form-label" for="assignmentDesc">Instructions & Problem Statement</label>
+                        <textarea id="assignmentDesc" class="textarea" rows="4" placeholder="Detail deliverables, formatting, rubric criteria, and constraints..."></textarea>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" for="assignmentDueDate">Due Date *</label>
+                            <input type="date" id="assignmentDueDate" class="input" required>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" for="assignmentMaxPoints">Maximum Marks / Points</label>
+                            <input type="number" id="assignmentMaxPoints" class="input" value="100" min="10" max="500">
+                        </div>
+                    </div>
+
+                    <div style="display: flex; justify-content: flex-end; gap: var(--space-2);">
+                        <button type="submit" id="submitAssignmentBtn" class="btn btn-primary">
+                            Publish Assignment &rarr;
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Assignments List Container -->
+            <div id="courseAssignmentsList" style="display: flex; flex-direction: column; gap: var(--space-4);">
+                <div class="loading-container">
+                    <div class="spinner"></div><span>Loading course assignments...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: OVERVIEW -->
+        <section id="overviewTab" class="tab-panel">
+            <div class="card" style="padding: var(--space-6);">
+                <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-bottom: var(--space-3);">Course Description & Syllabus</h3>
+                <p id="courseFullDesc" style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                    No description provided yet.
+                </p>
+
+                <div style="border-top: 1px solid var(--border-color); margin-top: var(--space-6); padding-top: var(--space-4); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4);">
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Instructor</span>
+                        <strong id="courseTeacherName" style="display: block; color: var(--text-main); margin-top: 2px;">Faculty</strong>
+                    </div>
+                    <div>
+                        <span style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Course Created</span>
+                        <span id="courseCreatedDate" style="display: block; color: var(--text-main); margin-top: 2px;">-</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Video Player Modal -->
+    <div id="videoPlayerModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 1000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="width: 100%; max-width: 800px; padding: var(--space-4); background: var(--bg-surface);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h3 id="modalVideoTitle" style="font-size: 1.1rem; font-weight: 700; margin: 0;">Playing Lecture Video</h3>
+                <button id="closeVideoModalBtn" class="theme-toggle-btn" style="width: 32px; height: 32px;">✕</button>
+            </div>
+            <div style="position: relative; background: #000; border-radius: var(--radius-md); overflow: hidden;">
+                <video id="modalVideoElement" controls autoplay style="width: 100%; max-height: 480px; display: block;"></video>
             </div>
         </div>
     </div>
+
+    <!-- Submissions Review Modal -->
+    <div id="submissionsModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 1000; align-items: center; justify-content: center; padding: 20px;">
+        <div class="card" style="width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; padding: var(--space-6); background: var(--bg-surface);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <div>
+                    <h3 id="submissionsModalTitle" style="font-size: 1.25rem; font-weight: 800; margin: 0;">Student Submissions</h3>
+                    <p id="submissionsModalSubtitle" style="font-size: 0.8rem; color: var(--text-muted); margin: 2px 0 0;">Review student work and assign grades</p>
+                </div>
+                <button id="closeSubmissionsModalBtn" class="theme-toggle-btn" style="width: 32px; height: 32px;">✕</button>
+            </div>
+            
+            <div id="submissionsModalContent">
+                <div class="loading-container"><div class="spinner"></div><span>Loading submissions...</span></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
     <script>
-        /* Early route guard — runs before layout.js is fully parsed */
+        // Route Guard for Teacher & Admin
         (function() {
             var token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
             if (!token) { window.location.href = "login.html"; return; }
@@ -56,10 +272,8 @@
                     window.location.href = "login.html?reason=expired";
                 }
                 var role = p.role || "";
-                var allowed = ["TEACHER"];
-                if (allowed.length && allowed.indexOf(role) === -1) {
-                    var map = {ADMIN:"admin-dashboard.html",TEACHER:"teacher-dashboard.html",STUDENT:"student-dashboard.html"};
-                    window.location.href = map[role] || "login.html";
+                if (role !== "TEACHER" && role !== "ADMIN") {
+                    window.location.href = role === "STUDENT" ? "student-dashboard.html" : "login.html";
                 }
             } catch(e) { window.location.href = "login.html"; }
         })();

@@ -7,7 +7,7 @@ async function loadAttendance() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch('http://localhost:8080/api/student/attendance/mine', {
+        const response = await fetch('/api/student/attendance/mine', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });

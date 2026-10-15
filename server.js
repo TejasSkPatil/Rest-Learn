@@ -143,18 +143,29 @@ let modules = [
 let videos = [
   {
     id: 1,
+    courseId: 1,
     moduleId: 1,
-    title: 'Big-O Notation Deep Dive & Master Theorem',
+    title: 'Lecture 1: Big-O Notation Deep Dive & Master Theorem',
     duration: '25:30',
-    videoUrl: '/demo-video.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     createdAt: new Date().toISOString()
   },
   {
     id: 2,
+    courseId: 1,
     moduleId: 2,
-    title: 'Quicksort Partitioning Strategies and Analysis',
+    title: 'Lecture 2: Quicksort Partitioning Strategies and Analysis',
     duration: '18:45',
-    videoUrl: '/demo-video.mp4',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    createdAt: new Date().toISOString()
+  },
+  {
+    id: 3,
+    courseId: 2,
+    moduleId: 3,
+    title: 'Lecture 1: Relational Algebra & ER Modeling Principles',
+    duration: '22:15',
+    videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     createdAt: new Date().toISOString()
   }
 ];
@@ -832,6 +843,68 @@ app.delete('/api/teacher/courses/:courseId/modules/:moduleId', authenticate, req
 });
 
 // Videos
+app.get(['/api/courses/:courseId/videos', '/api/teacher/courses/:courseId/videos', '/api/student/courses/:courseId/videos'], authenticate, (req, res) => {
+  const courseId = parseInt(req.params.courseId);
+  const courseMods = modules.filter(m => m.courseId === courseId);
+  const modIds = courseMods.map(m => m.id);
+  const vids = videos.filter(v => v.courseId === courseId || modIds.includes(v.moduleId));
+  const enriched = vids.map(v => {
+    const mod = modules.find(m => m.id === v.moduleId);
+    return {
+      ...v,
+      moduleTitle: mod ? mod.title : 'General Lecture Videos'
+    };
+  });
+  res.json(enriched);
+});
+
+app.post(['/api/teacher/courses/:courseId/videos', '/api/courses/:courseId/videos'], authenticate, requireRole('TEACHER', 'ADMIN'), upload.single('file'), (req, res) => {
+  const courseId = parseInt(req.params.courseId);
+  const course = courses.find(c => c.id === courseId);
+  if (!course) return res.status(404).json({ message: 'Course not found' });
+
+  let targetModuleId = parseInt(req.body.moduleId);
+  if (!targetModuleId || isNaN(targetModuleId)) {
+    let mod = null;
+    if (req.body.moduleTitle) {
+      mod = modules.find(m => m.courseId === courseId && m.title.toLowerCase() === req.body.moduleTitle.toLowerCase().trim());
+    }
+    if (!mod) {
+      mod = {
+        id: modules.length ? Math.max(...modules.map(m => m.id)) + 1 : 1,
+        courseId,
+        title: req.body.moduleTitle || 'Module 1: Lecture Content',
+        order: modules.filter(m => m.courseId === courseId).length + 1,
+        status: 'PUBLISHED'
+      };
+      modules.push(mod);
+    }
+    targetModuleId = mod.id;
+  }
+
+  const title = req.body.title || (req.file ? req.file.originalname : 'New Lecture Video');
+  const duration = req.body.duration || '15:00';
+  let videoUrl = req.body.videoUrl || '';
+  if (req.file) {
+    videoUrl = `/uploads/videos/${req.file.filename}`;
+  } else if (!videoUrl) {
+    videoUrl = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  }
+
+  const newVideo = {
+    id: videos.length ? Math.max(...videos.map(v => v.id)) + 1 : 1,
+    courseId,
+    moduleId: targetModuleId,
+    title,
+    description: req.body.description || '',
+    duration,
+    videoUrl,
+    createdAt: new Date().toISOString()
+  };
+  videos.push(newVideo);
+  res.json(newVideo);
+});
+
 app.get(['/api/modules/:moduleId/videos', '/api/teacher/modules/:moduleId/videos'], authenticate, (req, res) => {
   const modId = parseInt(req.params.moduleId);
   res.json(videos.filter(v => v.moduleId === modId));
@@ -845,23 +918,36 @@ app.post('/api/teacher/modules/:moduleId/videos', authenticate, requireRole('TEA
     moduleId: modId,
     title,
     duration: '15:00',
-    videoUrl: req.file ? `/uploads/videos/${req.file.filename}` : '/demo-video.mp4',
+    videoUrl: req.file ? `/uploads/videos/${req.file.filename}` : 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
     createdAt: new Date().toISOString()
   };
   videos.push(newVideo);
   res.json(newVideo);
 });
 
-app.delete('/api/teacher/modules/:moduleId/videos/:videoId', authenticate, requireRole('TEACHER', 'ADMIN'), (req, res) => {
-  videos = videos.filter(v => v.id !== parseInt(req.params.videoId));
-  res.status(204).send();
+app.delete(['/api/teacher/modules/:moduleId/videos/:videoId', '/api/teacher/videos/:videoId', '/api/videos/:videoId', '/api/teacher/courses/:courseId/videos/:videoId', '/api/courses/:courseId/videos/:videoId'], authenticate, requireRole('TEACHER', 'ADMIN'), (req, res) => {
+  const vidId = parseInt(req.params.videoId);
+  videos = videos.filter(v => v.id !== vidId);
+  res.json({ success: true, message: 'Video deleted successfully' });
 });
 
 app.get('/api/videos/:id/stream', (req, res) => {
   const vid = videos.find(v => v.id === parseInt(req.params.id));
   if (!vid) return res.status(404).send('Video not found');
-  res.type('video/mp4');
-  res.send(Buffer.from(''));
+  if (vid.videoUrl && vid.videoUrl.startsWith('http')) {
+    return res.redirect(vid.videoUrl);
+  }
+  if (vid.videoUrl && vid.videoUrl.startsWith('/uploads')) {
+    const fullPath = path.join(__dirname, vid.videoUrl);
+    if (fs.existsSync(fullPath)) {
+      return res.sendFile(fullPath);
+    }
+  }
+  res.redirect('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
+});
+
+app.get(['/demo-video.mp4', '/demo-video'], (req, res) => {
+  res.redirect('https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
 });
 
 // Resources
@@ -901,6 +987,83 @@ app.get('/api/resources/:id/download', (req, res) => {
 });
 
 // Assignments
+app.get(['/api/courses/:courseId/assignments', '/api/teacher/courses/:courseId/assignments', '/api/student/courses/:courseId/assignments'], authenticate, (req, res) => {
+  const courseId = parseInt(req.params.courseId);
+  const courseMods = modules.filter(m => m.courseId === courseId);
+  const modIds = courseMods.map(m => m.id);
+  const courseAssignments = assignments.filter(a => a.courseId === courseId || modIds.includes(a.moduleId));
+
+  const enriched = courseAssignments.map(a => {
+    const mod = modules.find(m => m.id === a.moduleId);
+    const sub = submissions.find(s => s.assignmentId === a.id && s.studentId === req.user.id);
+    const totalSubs = submissions.filter(s => s.assignmentId === a.id).length;
+    return {
+      ...a,
+      moduleTitle: mod ? mod.title : 'General Coursework',
+      mySubmission: sub || null,
+      submissionCount: totalSubs
+    };
+  });
+  res.json(enriched);
+});
+
+app.post(['/api/teacher/courses/:courseId/assignments', '/api/courses/:courseId/assignments'], authenticate, requireRole('TEACHER', 'ADMIN'), upload.single('file'), (req, res) => {
+  const courseId = parseInt(req.params.courseId);
+  const course = courses.find(c => c.id === courseId);
+  if (!course) return res.status(404).json({ message: 'Course not found' });
+
+  let targetModuleId = parseInt(req.body.moduleId);
+  if (!targetModuleId || isNaN(targetModuleId)) {
+    let mod = null;
+    if (req.body.moduleTitle) {
+      mod = modules.find(m => m.courseId === courseId && m.title.toLowerCase() === req.body.moduleTitle.toLowerCase().trim());
+    }
+    if (!mod) {
+      mod = {
+        id: modules.length ? Math.max(...modules.map(m => m.id)) + 1 : 1,
+        courseId,
+        title: req.body.moduleTitle || 'Module 1: Coursework & Tasks',
+        order: modules.filter(m => m.courseId === courseId).length + 1,
+        status: 'PUBLISHED'
+      };
+      modules.push(mod);
+    }
+    targetModuleId = mod.id;
+  }
+
+  const { title, description, dueDate, maxPoints } = req.body;
+  const newA = {
+    id: assignments.length ? Math.max(...assignments.map(a => a.id)) + 1 : 1,
+    courseId,
+    moduleId: targetModuleId,
+    title: title || 'New Assignment',
+    description: description || '',
+    dueDate: dueDate || new Date(Date.now() + 86400000 * 14).toISOString().split('T')[0],
+    maxPoints: parseInt(maxPoints) || 100,
+    attachmentFile: req.file ? `/uploads/resources/${req.file.filename}` : null,
+    status: 'PUBLISHED',
+    createdAt: new Date().toISOString()
+  };
+  assignments.push(newA);
+  res.json(newA);
+});
+
+app.delete(['/api/teacher/assignments/:assignmentId', '/api/assignments/:assignmentId', '/api/teacher/courses/:courseId/assignments/:assignmentId', '/api/courses/:courseId/assignments/:assignmentId'], authenticate, requireRole('TEACHER', 'ADMIN'), (req, res) => {
+  const aId = parseInt(req.params.assignmentId);
+  assignments = assignments.filter(a => a.id !== aId);
+  res.json({ success: true, message: 'Assignment deleted successfully' });
+});
+
+app.get('/api/student/courses/:courseId/status', authenticate, (req, res) => {
+  const courseId = parseInt(req.params.courseId);
+  const isEnrolled = enrollments.some(e => e.studentId === req.user.id && e.courseId === courseId && e.status === 'ACTIVE');
+  const course = courses.find(c => c.id === courseId);
+  res.json({
+    enrolled: isEnrolled || req.user.role === 'ADMIN' || req.user.role === 'TEACHER',
+    course: course || null
+  });
+});
+
 app.get(['/api/modules/:moduleId/assignments', '/api/teacher/modules/:moduleId/assignments'], authenticate, (req, res) => {
   const modId = parseInt(req.params.moduleId);
   res.json(assignments.filter(a => a.moduleId === modId));

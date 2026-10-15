@@ -6,7 +6,7 @@
  * - Provides clean error messages to catch blocks
  */
 (function() {
-  const BASE_URL = window.API_BASE_URL || 'http://localhost:8080';
+  const BASE_URL = window.API_BASE_URL || '';
 
   function getToken() {
     return localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken') ||
@@ -55,13 +55,18 @@
         throw new Error('Unauthorized or session expired. Please sign in again.');
       }
 
+      if (response.status === 204) {
+        return { success: true };
+      }
+
       const contentType = response.headers.get('content-type');
       let data = null;
 
       if (contentType && contentType.includes('application/json')) {
         data = await response.json();
       } else {
-        data = await response.text();
+        const text = await response.text();
+        data = text ? text : { success: true };
       }
 
       if (!response.ok) {
@@ -89,6 +94,7 @@
     put: (url, body, options) => request(url, { method: 'PUT', body: body instanceof FormData ? body : JSON.stringify(body), ...options }),
     patch: (url, body, options) => request(url, { method: 'PATCH', body: body instanceof FormData ? body : JSON.stringify(body), ...options }),
     del: (url, options) => request(url, { method: 'DELETE', ...options }),
+    delete: (url, options) => request(url, { method: 'DELETE', ...options }),
     upload: (url, formData, options) => request(url, { method: 'POST', body: formData, ...options })
   };
 })();

@@ -24,7 +24,7 @@ async function loadAssignmentDetails() {
 
     try {
         // Get module assignments to find this one
-        const response = await fetch(`http://localhost:8080/api/modules/assignments/${currentAssignmentId}`, {
+        const response = await fetch(`/api/modules/assignments/${currentAssignmentId}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -42,7 +42,7 @@ async function loadMySubmission() {
     const token = localStorage.getItem('jwtToken') || sessionStorage.getItem('jwtToken');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/student/assignments/${currentAssignmentId}/submissions/mine`, {
+        const response = await fetch(`/api/student/assignments/${currentAssignmentId}/submissions/mine`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -91,7 +91,7 @@ async function submitAssignment() {
     }
 
     try {
-        const response = await fetch(`http://localhost:8080/api/student/assignments/${currentAssignmentId}/submissions`, {
+        const response = await fetch(`/api/student/assignments/${currentAssignmentId}/submissions`, {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` },
             body: formData

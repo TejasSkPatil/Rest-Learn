@@ -3,39 +3,517 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Learning Platform</title>
+    <title>E-Learning Platform — Digital University Campus</title>
     <meta name="description" content="A role-based university e-learning platform for admins, teachers and students.">
+    <meta property="og:title" content="E-Learning Platform — Digital University Campus">
+    <meta property="og:description" content="A role-based university e-learning platform for admins, teachers and students.">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body class="public-page">
-    <div class="public-container">
-        <h1>E-Learning Platform</h1>
-        <p class="tagline">Access your courses, live classes, assignments, and learning resources — all in one place.</p>
+<body style="background-color: var(--bg-app); min-height: 100vh; display: flex; flex-direction: column;">
 
-        <div class="public-actions">
-            <a href="login.html" class="btn-primary" id="landingLoginBtn">Sign In</a>
-            <a href="register.html" class="btn-outline" id="landingSignupBtn">Create Account</a>
+    <!-- Top Navigation Header -->
+    <header class="landing-header">
+        <div class="landing-nav">
+            <a href="index.html" class="landing-brand">
+                <span>⚡</span>
+                <span>EduPlatform</span>
+            </a>
+
+            <ul class="landing-nav-links">
+                <li><a href="#courses">Courses</a></li>
+                <li><a href="#portals">Role Portals</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#demo">Demo Accounts</a></li>
+            </ul>
+
+            <div class="landing-nav-actions">
+                <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">🌙</button>
+                
+                <!-- Dynamic Auth Buttons populated by script -->
+                <div id="navAuthArea" style="display: flex; gap: 8px; align-items: center;">
+                    <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+                    <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- User Logged In Banner (shows if user has an active session) -->
+    <div id="loggedInBanner" class="user-status-banner" style="display: none;">
+        <div class="user-status-banner-inner">
+            <span>👋 Welcome back, <strong id="loggedInName"></strong> (<span id="loggedInRole"></span>)!</span>
+            <div style="display: flex; gap: 10px; align-items: center;">
+                <a id="dashboardLink" href="student-dashboard.html" class="btn btn-primary btn-sm" style="padding: 4px 12px; font-size: 0.8rem;">Go to Dashboard &rarr;</a>
+                <button id="quickLogoutBtn" class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 0.8rem;">Logout</button>
+            </div>
         </div>
     </div>
 
+    <!-- Main Content -->
+    <main style="flex: 1;">
+        <!-- Hero Section -->
+        <section class="home-hero">
+            <div class="home-badge">
+                <span>🎓</span>
+                <span>University Learning Management System</span>
+            </div>
+
+            <h1 class="home-hero-title">
+                Empower Your Academic Journey with <span>EduPlatform</span>
+            </h1>
+
+            <p class="home-hero-desc">
+                A unified role-based digital campus connecting students, professors, and administrators. 
+                Stream high-definition lecture videos, conduct live virtual classes with automated attendance, 
+                submit coursework, take quizzes, and earn verifiable certificates.
+            </p>
+
+            <div class="home-hero-actions">
+                <a href="login.html" class="btn-primary">
+                    <span>Sign In to Portal</span>
+                    <span>&rarr;</span>
+                </a>
+                <a href="register.html" class="btn-outline">
+                    <span>Create Account</span>
+                </a>
+                <a href="course-browse.html" class="btn-outline" style="border-style: dashed;">
+                    <span>🔍 Browse Courses</span>
+                </a>
+            </div>
+
+            <!-- Stats Counter Row -->
+            <div class="home-stats-grid">
+                <div class="home-stat-card">
+                    <div class="home-stat-num">3</div>
+                    <div class="home-stat-label">Role Portals</div>
+                </div>
+                <div class="home-stat-card">
+                    <div class="home-stat-num">100%</div>
+                    <div class="home-stat-label">Auto Attendance</div>
+                </div>
+                <div class="home-stat-card">
+                    <div class="home-stat-num">HD</div>
+                    <div class="home-stat-label">Video Streaming</div>
+                </div>
+                <div class="home-stat-card">
+                    <div class="home-stat-num">Instant</div>
+                    <div class="home-stat-label">Quiz Grading</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Role Portals Section -->
+        <section id="portals" class="home-section">
+            <div class="home-section-header">
+                <div class="home-section-tag">Role-Based Architecture</div>
+                <h2 class="home-section-title">Designed for Every University Stakeholder</h2>
+                <p class="home-section-desc">Tailored dashboards and tools configured specifically for your academic responsibilities.</p>
+            </div>
+
+            <div class="portals-grid">
+                <!-- Student Portal Card -->
+                <div class="portal-card">
+                    <div class="portal-card-top">
+                        <span class="portal-badge portal-badge-student">🎓 Student Portal</span>
+                        <h3>Learn & Achieve</h3>
+                        <p>Join university classes with a single enrollment key, access lecture videos, and track your degree progress.</p>
+                        
+                        <ul class="portal-features-list">
+                            <li>Enroll in courses via 8-character codes</li>
+                            <li>Stream video lectures & download PDF notes</li>
+                            <li>Submit assignments with text & attachments</li>
+                            <li>Join live classes with automated attendance</li>
+                            <li>Take timed quizzes & download certificates</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <a href="login.html" class="btn-primary" style="margin-bottom: 8px;">
+                            <span>Student Sign In</span>
+                            <span>&rarr;</span>
+                        </a>
+                        <a href="register.html" class="btn-outline">Create Student Account</a>
+                    </div>
+                </div>
+
+                <!-- Teacher Portal Card -->
+                <div class="portal-card">
+                    <div class="portal-card-top">
+                        <span class="portal-badge portal-badge-teacher">👨‍🏫 Faculty Portal</span>
+                        <h3>Teach & Mentor</h3>
+                        <p>Design rich syllabi, manage course modules, stream live lectures, and grade assignments effortlessly.</p>
+                        
+                        <ul class="portal-features-list">
+                            <li>Create courses & auto-generate enrollment codes</li>
+                            <li>Upload lecture videos & supplementary documents</li>
+                            <li>Host live virtual sessions with presence tracking</li>
+                            <li>Grade student submissions with score & feedback</li>
+                            <li>Build interactive quizzes with answer keys</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <a href="login.html" class="btn-primary" style="margin-bottom: 8px;">
+                            <span>Faculty Sign In</span>
+                            <span>&rarr;</span>
+                        </a>
+                        <a href="register.html" class="btn-outline">Register as Instructor</a>
+                    </div>
+                </div>
+
+                <!-- Admin Portal Card -->
+                <div class="portal-card">
+                    <div class="portal-card-top">
+                        <span class="portal-badge portal-badge-admin">⚙️ Administration</span>
+                        <h3>Govern & Analyze</h3>
+                        <p>Complete control over user security, institutional departments, academic sessions, and scheduling.</p>
+                        
+                        <ul class="portal-features-list">
+                            <li>User provisioning, password resets & status toggles</li>
+                            <li>Department & Academic Session management</li>
+                            <li>Weekly timetable scheduling with collision checks</li>
+                            <li>University-wide attendance compliance reports</li>
+                            <li>Immutable audit logs for modifications</li>
+                        </ul>
+                    </div>
+
+                    <div>
+                        <a href="login.html" class="btn-primary">
+                            <span>Administrator Sign In</span>
+                            <span>&rarr;</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Courses Section -->
+        <section id="courses" class="home-section">
+            <div class="home-section-header">
+                <div class="home-section-tag">Academic Catalog</div>
+                <h2 class="home-section-title">Explore Active Courses</h2>
+                <p class="home-section-desc">Browse top-rated university curriculum available on the platform right now.</p>
+            </div>
+
+            <div id="homeCoursesGrid" class="grid grid-3">
+                <div class="loading-container" style="grid-column: 1 / -1;">
+                    <div class="spinner"></div>
+                    <span>Loading available courses...</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: var(--space-8);">
+                <a href="course-browse.html" class="btn btn-outline btn-lg">View All Courses in Catalog &rarr;</a>
+            </div>
+        </section>
+
+        <!-- Platform Features Grid -->
+        <section id="features" class="home-section">
+            <div class="home-section-header">
+                <div class="home-section-tag">Capabilities</div>
+                <h2 class="home-section-title">Everything You Need for Digital Learning</h2>
+                <p class="home-section-desc">A complete suite of integrated tools designed for academic excellence.</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">📹</div>
+                    <h4>Lecture Video Vault</h4>
+                    <p>On-demand video streaming with watch progress tracking so students can review lessons anytime.</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">🔴</div>
+                    <h4>Live Classes & Attendance</h4>
+                    <p>Real-time class meeting links with automated join/leave duration calculation for accurate attendance.</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">📝</div>
+                    <h4>Assignments & Grading</h4>
+                    <p>Students upload solutions before due dates; instructors review submissions with grades and notes.</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">⏱️</div>
+                    <h4>Interactive Quizzes</h4>
+                    <p>Automated question evaluation with instant percentage calculations and passing status badges.</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">📅</div>
+                    <h4>Timetable Scheduler</h4>
+                    <p>Weekly classroom and instructor schedule engine equipped with time conflict detection.</p>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon-wrapper">📜</div>
+                    <h4>Verified Certificates</h4>
+                    <p>Automated completion certificates generated once coursework and requirements are satisfied.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Demo Accounts Quick Access -->
+        <section id="demo" class="home-section">
+            <div class="home-section-header">
+                <div class="home-section-tag">Test the System</div>
+                <h2 class="home-section-title">Instant Demo Account Access</h2>
+                <p class="home-section-desc">Experience the platform with pre-configured accounts for each user role.</p>
+            </div>
+
+            <div class="demo-accounts-wrapper">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div>
+                        <strong style="color: var(--text-main); font-size: 1.1rem;">Pre-seeded Test Credentials</strong>
+                        <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 2px;">Click any button below to instantly sign in and explore that role's interface:</p>
+                    </div>
+                    <span class="badge badge-primary">Default Password: password123</span>
+                </div>
+
+                <div class="demo-account-cards">
+                    <!-- Admin Card -->
+                    <div class="demo-account-item">
+                        <div>
+                            <span class="badge badge-warning" style="margin-bottom: 6px;">ADMIN</span>
+                            <strong>Admin User</strong>
+                            <small style="display:block;">admin@university.edu</small>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="quickLogin('admin@university.edu', 'password123')">
+                            Launch Admin Dashboard &rarr;
+                        </button>
+                    </div>
+
+                    <!-- Teacher Card -->
+                    <div class="demo-account-item">
+                        <div>
+                            <span class="badge badge-success" style="margin-bottom: 6px;">TEACHER</span>
+                            <strong>Prof. Alan Turing</strong>
+                            <small style="display:block;">teacher@university.edu</small>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="quickLogin('teacher@university.edu', 'password123')">
+                            Launch Teacher Dashboard &rarr;
+                        </button>
+                    </div>
+
+                    <!-- Student Card -->
+                    <div class="demo-account-item">
+                        <div>
+                            <span class="badge badge-primary" style="margin-bottom: 6px;">STUDENT</span>
+                            <strong>Ada Lovelace</strong>
+                            <small style="display:block;">student@university.edu</small>
+                        </div>
+                        <button type="button" class="btn btn-primary btn-sm" onclick="quickLogin('student@university.edu', 'password123')">
+                            Launch Student Dashboard &rarr;
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="landing-footer">
+        <div class="landing-footer-inner">
+            <div class="landing-footer-copy">
+                <strong>⚡ EduPlatform</strong> &bull; University E-Learning Portal &bull; &copy; 2026 All Rights Reserved
+            </div>
+            <ul class="landing-footer-links">
+                <li><a href="login.html">Sign In</a></li>
+                <li><a href="register.html">Register</a></li>
+                <li><a href="course-browse.html">Browse Courses</a></li>
+                <li><a href="#top">Back to Top ↑</a></li>
+            </ul>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/theme-toggle.js"></script>
+    <script src="js/toast.js"></script>
+    <script src="js/api.js"></script>
+
     <script>
-        // If already logged in, redirect to their dashboard
-        (function() {
+        // 1. Session State Checking
+        (function checkSession() {
             var token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
             if (!token) return;
+
             try {
                 var payload = JSON.parse(atob(token.split(".")[1].replace(/-/g,"+").replace(/_/g,"/")));
                 if (payload.exp && Date.now()/1000 > payload.exp) {
-                    localStorage.removeItem("jwtToken"); sessionStorage.removeItem("jwtToken"); return;
+                    localStorage.removeItem("jwtToken");
+                    sessionStorage.removeItem("jwtToken");
+                    return;
                 }
-                var map = {ADMIN:"admin-dashboard.html",TEACHER:"teacher-dashboard.html",STUDENT:"student-dashboard.html"};
-                window.location.href = map[payload.role] || "student-dashboard.html";
-            } catch(e) {}
+
+                var role = payload.role || "STUDENT";
+                var name = payload.name || payload.email || "User";
+                var map = { ADMIN: "admin-dashboard.html", TEACHER: "teacher-dashboard.html", STUDENT: "student-dashboard.html" };
+                var target = map[role] || "student-dashboard.html";
+
+                // Update Header Auth buttons
+                var authArea = document.getElementById("navAuthArea");
+                if (authArea) {
+                    authArea.innerHTML = `
+                        <a href="${target}" class="btn btn-primary btn-sm">My Dashboard &rarr;</a>
+                        <button onclick="handleLogout()" class="btn btn-outline btn-sm">Sign Out</button>
+                    `;
+                }
+
+                // Show Logged-in Banner
+                var banner = document.getElementById("loggedInBanner");
+                var nameEl = document.getElementById("loggedInName");
+                var roleEl = document.getElementById("loggedInRole");
+                var linkEl = document.getElementById("dashboardLink");
+
+                if (banner && nameEl && roleEl && linkEl) {
+                    nameEl.textContent = name;
+                    roleEl.textContent = role;
+                    linkEl.href = target;
+                    banner.style.display = "block";
+                }
+
+            } catch(e) {
+                console.warn("Invalid token check", e);
+            }
         })();
+
+        // 2. Quick Demo Login Handler
+        async function quickLogin(email, password) {
+            if (window.showToast) showToast(`Authenticating as ${email}...`, "info");
+            try {
+                const res = await api.post("/api/users/login", { email, password });
+                const token = typeof res === "string" ? res.trim().replace(/^"|"$/g, "") : res.token || res;
+                localStorage.setItem("jwtToken", token);
+
+                const b64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
+                const payload = JSON.parse(atob(b64));
+                localStorage.setItem("userRole", payload.role || "STUDENT");
+                localStorage.setItem("userName", payload.name || payload.email || email);
+
+                if (window.showToast) showToast("Sign in successful! Redirecting...", "success");
+
+                var map = { ADMIN: "admin-dashboard.html", TEACHER: "teacher-dashboard.html", STUDENT: "student-dashboard.html" };
+                setTimeout(() => {
+                    window.location.href = map[payload.role] || "student-dashboard.html";
+                }, 400);
+
+            } catch(err) {
+                console.error("Quick login failed:", err);
+                if (window.showToast) showToast("Login failed: " + err.message, "error");
+                else alert("Login failed: " + err.message);
+            }
+        }
+
+        // 3. Logout Helper
+        function handleLogout() {
+            localStorage.removeItem("jwtToken");
+            localStorage.removeItem("userRole");
+            localStorage.removeItem("userName");
+            sessionStorage.removeItem("jwtToken");
+            window.location.reload();
+        }
+
+        var quickLogoutBtn = document.getElementById("quickLogoutBtn");
+        if (quickLogoutBtn) {
+            quickLogoutBtn.addEventListener("click", handleLogout);
+        }
+
+        // 4. Fetch Courses dynamically for the showcase
+        async function loadFeaturedCourses() {
+            const grid = document.getElementById("homeCoursesGrid");
+            if (!grid) return;
+
+            try {
+                const data = await api.get("/api/courses/search");
+                const courses = Array.isArray(data) ? data : (data.content || []);
+
+                if (!courses || courses.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-state" style="grid-column: 1 / -1;">
+                            <div class="empty-state-icon">📚</div>
+                            <div class="empty-state-title">Courses Being Prepared</div>
+                            <div class="empty-state-desc">New academic courses will appear here shortly.</div>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Render up to 3 featured courses
+                const featured = courses.slice(0, 3);
+                grid.innerHTML = featured.map(c => `
+                    <div class="card" style="display:flex; flex-direction:column; justify-content:space-between; height:100%;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                                <span class="badge badge-primary">${c.courseCode || 'COURSE'}</span>
+                                <span class="badge badge-neutral">${c.semester || 'Semester'}</span>
+                            </div>
+                            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:8px;">${c.name}</h3>
+                            <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5; margin-bottom:14px;">
+                                ${c.description || 'Comprehensive curriculum covering theoretical foundations and practical applications.'}
+                            </p>
+                        </div>
+                        <div style="border-top:1px solid var(--border-color); padding-top:12px; display:flex; justify-content:space-between; align-items:center;">
+                            <small style="color:var(--text-muted);">Dept: <strong>${c.department || 'General'}</strong></small>
+                            <a href="login.html" class="btn btn-outline btn-sm">Enroll &rarr;</a>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.warn("Could not load featured courses:", err);
+                grid.innerHTML = `
+                    <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                                <span class="badge badge-primary">CS101</span>
+                                <span class="badge badge-neutral">Fall 2026</span>
+                            </div>
+                            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:8px;">CS101 - Algorithms & Data Structures</h3>
+                            <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">Comprehensive study of core algorithms, Big-O analysis, trees, graphs, and dynamic programming.</p>
+                        </div>
+                        <div style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:16px; display:flex; justify-content:space-between; align-items:center;">
+                            <small style="color:var(--text-muted);">Dept: <strong>Computer Science</strong></small>
+                            <a href="login.html" class="btn btn-outline btn-sm">Enroll &rarr;</a>
+                        </div>
+                    </div>
+
+                    <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                                <span class="badge badge-primary">CS202</span>
+                                <span class="badge badge-neutral">Fall 2026</span>
+                            </div>
+                            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:8px;">CS202 - Database Systems & SQL</h3>
+                            <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">Relational database architecture, normalization, indexing, transaction processing, and query optimization.</p>
+                        </div>
+                        <div style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:16px; display:flex; justify-content:space-between; align-items:center;">
+                            <small style="color:var(--text-muted);">Dept: <strong>Computer Science</strong></small>
+                            <a href="login.html" class="btn btn-outline btn-sm">Enroll &rarr;</a>
+                        </div>
+                    </div>
+
+                    <div class="card" style="display:flex; flex-direction:column; justify-content:space-between;">
+                        <div>
+                            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                                <span class="badge badge-primary">MATH301</span>
+                                <span class="badge badge-neutral">Fall 2026</span>
+                            </div>
+                            <h3 style="font-size:1.15rem; font-weight:700; color:var(--text-main); margin-bottom:8px;">MATH301 - Discrete Mathematics</h3>
+                            <p style="font-size:0.875rem; color:var(--text-muted); line-height:1.5;">Logic, sets, relations, combinatorics, graph theory, and mathematical proof structures.</p>
+                        </div>
+                        <div style="border-top:1px solid var(--border-color); padding-top:12px; margin-top:16px; display:flex; justify-content:space-between; align-items:center;">
+                            <small style="color:var(--text-muted);">Dept: <strong>Mathematics</strong></small>
+                            <a href="login.html" class="btn btn-outline btn-sm">Enroll &rarr;</a>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", loadFeaturedCourses);
     </script>
-    <script src="js/toast.js"></script>
-    <script src="js/api.js"></script>
 </body>
 </html>

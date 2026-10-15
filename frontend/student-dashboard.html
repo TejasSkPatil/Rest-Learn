@@ -3,50 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Dashboard</title>
+    <title>Student Dashboard — EduPlatform</title>
+    <meta name="description" content="View enrolled courses, assignments, and lecture videos.">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin.css">
-    <link rel="stylesheet" href="css/courses.css">
 </head>
 <body>
     <div id="navbar"></div>
     <div id="sidebar"></div>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>Student Dashboard</h1>
-        </div>
-        
-        <div class="row">
-            <div class="col-md-6">
-                <h3>My Courses</h3>
-                <div id="studentCourses" class="course-grid"></div>
+    <main class="page-container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
+        <!-- Header -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: var(--space-4); margin-bottom: var(--space-6);">
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin: 0;">
+                    🎓 Student Dashboard
+                </h1>
+                <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin: 4px 0 0;">
+                    Access your enrolled courses, stream lecture videos, and complete assignments.
+                </p>
             </div>
-            <div class="col-md-6">
-                <h3>Today's Classes</h3>
-                <p>Scheduled live classes will appear here.</p>
+
+            <div style="display: flex; gap: var(--space-3); flex-wrap: wrap;">
+                <a href="student-join-course.html" class="btn btn-primary">
+                    + Join Course with Code
+                </a>
+                <a href="course-browse.html" class="btn btn-outline">
+                    🔍 Browse Catalog
+                </a>
             </div>
         </div>
-        
-        <div class="row mt-4">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>My Timetable</h5>
-                    </div>
-                    <div class="card-body">
-                        <div id="studentTimetable" class="timetable-section">
-                            <p>Loading timetable...</p>
-                        </div>
-                    </div>
+
+        <!-- Enrolled Courses Section -->
+        <section style="margin-bottom: var(--space-8);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
+                <h2 style="font-size: 1.4rem; font-weight: 700; color: var(--text-main); margin: 0;">
+                    📚 My Enrolled Courses
+                </h2>
+                <small style="color: var(--text-muted);">Click "Enter Course" to view videos & assignments</small>
+            </div>
+
+            <!-- Grid of Enrolled Courses -->
+            <div id="studentCourses" class="grid grid-3">
+                <div class="loading-container" style="grid-column: 1 / -1;">
+                    <div class="spinner"></div><span>Loading courses...</span>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+
+        <!-- Fast Navigation Shortcuts -->
+        <section style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-4); margin-bottom: var(--space-8);">
+            <div class="card" style="padding: var(--space-5);">
+                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: 8px;">
+                    <span style="font-size: 1.5rem;">📹</span>
+                    <strong style="color: var(--text-main); font-size: 1rem;">Lecture Videos</strong>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.4;">
+                    Watch recorded lecture modules on demand with playback controls.
+                </p>
+                <small style="color: var(--primary); font-weight: 600;">Available inside each enrolled course</small>
+            </div>
+
+            <div class="card" style="padding: var(--space-5);">
+                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: 8px;">
+                    <span style="font-size: 1.5rem;">📝</span>
+                    <strong style="color: var(--text-main); font-size: 1rem;">Assignments & Tasks</strong>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.4;">
+                    Submit homework solutions, track due dates, and review instructor scores.
+                </p>
+                <small style="color: var(--primary); font-weight: 600;">Available inside each enrolled course</small>
+            </div>
+
+            <div class="card" style="padding: var(--space-5);">
+                <div style="display: flex; align-items: center; gap: var(--space-3); margin-bottom: 8px;">
+                    <span style="font-size: 1.5rem;">✅</span>
+                    <strong style="color: var(--text-main); font-size: 1rem;">Attendance & Progress</strong>
+                </div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.4;">
+                    Track your live class attendance record and course completion percentages.
+                </p>
+                <a href="student-attendance.html" class="btn btn-outline btn-sm">Check Attendance &rarr;</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Early route guard -->
     <script>
-        /* Early route guard — runs before layout.js is fully parsed */
         (function() {
             var token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
             if (!token) { window.location.href = "login.html"; return; }
@@ -57,18 +101,16 @@
                     window.location.href = "login.html?reason=expired";
                 }
                 var role = p.role || "";
-                var allowed = ["STUDENT"];
-                if (allowed.length && allowed.indexOf(role) === -1) {
-                    var map = {ADMIN:"admin-dashboard.html",TEACHER:"teacher-dashboard.html",STUDENT:"student-dashboard.html"};
-                    window.location.href = map[role] || "login.html";
+                if (role !== "STUDENT" && role !== "ADMIN") {
+                    window.location.href = role === "TEACHER" ? "teacher-dashboard.html" : "login.html";
                 }
             } catch(e) { window.location.href = "login.html"; }
         })();
     </script>
-
-    <script src="js/script.js"></script>
     <script src="js/toast.js"></script>
     <script src="js/api.js"></script>
+    <script src="components/course-card.js"></script>
     <script src="js/layout.js"></script>
+    <script src="js/student-dashboard.js"></script>
 </body>
 </html>

@@ -3,66 +3,399 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Course - Teacher</title>
+    <title>Create New Course — Faculty Studio</title>
+    <meta name="description" content="Design a new academic course, syllabus, and generate student enrollment keys.">
     <link rel="stylesheet" href="css/design-system.css">
     <link rel="stylesheet" href="css/toast.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin.css">
+    <style>
+        .stepper-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-3) var(--space-5);
+            margin-bottom: var(--space-6);
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: var(--font-size-sm);
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .step-item.active {
+            color: var(--primary);
+        }
+        .step-num {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--bg-surface-alt);
+            border: 1px solid var(--border-color);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+        .step-item.active .step-num {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+        .step-divider {
+            flex: 1;
+            height: 1px;
+            background: var(--border-color);
+            margin: 0 var(--space-4);
+        }
+        .banner-preview-box {
+            height: 110px;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+            background: linear-gradient(135deg, var(--primary) 0%, #4338ca 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: var(--space-4);
+            color: white;
+            position: relative;
+        }
+        .theme-swatch {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.2s;
+        }
+        .theme-swatch:hover {
+            transform: scale(1.15);
+        }
+        .theme-swatch.active {
+            border-color: var(--text-main);
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
     <div id="navbar"></div>
     <div id="sidebar"></div>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>Create New Course</h1>
-        </div>
-
-        <div id="message"></div>
-
-        <div id="createForm">
-            <form id="courseForm">
-                <div class="form-group">
-                    <label for="name">Course Name</label>
-                    <input type="text" id="name" placeholder="e.g. Introduction to Computer Science" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="courseCode">Course Code</label>
-                    <input type="text" id="courseCode" placeholder="e.g. CS101" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="department">Department</label>
-                    <input type="text" id="department" placeholder="e.g. Computer Science" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="semester">Semester</label>
-                    <input type="text" id="semester" placeholder="e.g. Fall 2026" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <textarea id="description" rows="4" placeholder="Course description..."></textarea>
-                </div>
-
-                <button type="submit">Create Course</button>
-            </form>
-        </div>
-
-        <div id="successPanel" style="display:none;">
-            <h2>Course Created Successfully!</h2>
-            <p>Share this enrollment code with your students:</p>
-            <div class="enrollment-code-box">
-                <code id="generatedCode"></code>
-                <button onclick="copyCode()" class="btn-action btn-activate">Copy to Clipboard</button>
+    <main class="page-container" style="max-width: 1200px; margin: 30px auto; padding: 0 20px;">
+        <!-- Header & Breadcrumbs -->
+        <div style="margin-bottom: var(--space-5);">
+            <div style="font-size: var(--font-size-xs); color: var(--text-muted); margin-bottom: var(--space-2); display: flex; align-items: center; gap: 6px;">
+                <a href="teacher-dashboard.html" style="color: inherit; text-decoration: none;">Dashboard</a>
+                <span>/</span>
+                <a href="teacher-courses.html" style="color: inherit; text-decoration: none;">My Courses</a>
+                <span>/</span>
+                <span style="color: var(--primary); font-weight: 600;">Create Course</span>
             </div>
-            <a href="teacher-courses.html" class="btn-action">Back to My Courses</a>
+
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: var(--space-4);">
+                <div>
+                    <h1 style="font-size: 2.2rem; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; margin-bottom: 4px;">
+                        ✨ Create New Course
+                    </h1>
+                    <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin: 0;">
+                        Publish a curriculum offering, set up syllabus parameters, and generate an instant student enrollment key.
+                    </p>
+                </div>
+
+                <a href="teacher-courses.html" class="btn btn-outline btn-sm">
+                    &larr; Back to My Courses
+                </a>
+            </div>
         </div>
-    </div>
+
+        <!-- Progress Stepper Indicator -->
+        <div class="stepper-nav">
+            <div class="step-item active">
+                <span class="step-num">1</span>
+                <span>Basic Identity</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item active">
+                <span class="step-num">2</span>
+                <span>Term & Department</span>
+            </div>
+            <div class="step-divider"></div>
+            <div class="step-item active">
+                <span class="step-num">3</span>
+                <span>Syllabus & Access</span>
+            </div>
+        </div>
+
+        <!-- Success Celebration Panel (Hidden until successfully created) -->
+        <div id="successPanel" class="card" style="display: none; border: 2px solid var(--success); background: linear-gradient(to bottom, var(--success-light), var(--bg-surface)); margin-bottom: var(--space-8); padding: var(--space-8);">
+            <div style="text-align: center; max-width: 580px; margin: 0 auto;">
+                <div style="width: 64px; height: 64px; background: var(--success); color: white; border-radius: var(--radius-full); display: inline-flex; align-items: center; justify-content: center; font-size: 2rem; margin-bottom: var(--space-4); box-shadow: var(--shadow-md);">
+                    ✓
+                </div>
+                <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--text-main); margin-bottom: var(--space-2);">
+                    Course Published Successfully!
+                </h2>
+                <p style="color: var(--text-muted); font-size: var(--font-size-sm); margin-bottom: var(--space-6); line-height: 1.5;">
+                    Your new course is now active. Students can enroll immediately using this 8-character enrollment code:
+                </p>
+
+                <div class="enrollment-code-display" style="padding: 16px 24px; background: var(--bg-surface); border: 2px dashed var(--primary); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-6);">
+                    <code id="generatedCodeDisplay" style="font-size: 1.8rem; font-weight: 800; color: var(--primary); letter-spacing: 0.1em; font-family: monospace;">CODE2026</code>
+                    <button id="copyCodeBtn" type="button" class="btn btn-primary btn-sm">
+                        📋 Copy Code
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: var(--space-3); justify-content: center; flex-wrap: wrap;">
+                    <a id="goToCourseDetailBtn" href="teacher-courses.html" class="btn btn-primary btn-lg" style="box-shadow: var(--shadow-md);">
+                        🚀 Enter Course Studio (Upload Videos & Assignments) &rarr;
+                    </a>
+                    <a href="teacher-courses.html" class="btn btn-outline btn-lg">
+                        View All My Courses
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Studio Creation Layout: 2 Columns -->
+        <div id="createStudioContainer" class="studio-layout" style="display: grid; grid-template-columns: 1.25fr 1fr; gap: var(--space-6); align-items: start;">
+            <!-- Left Column: Step-by-Step Form -->
+            <div>
+                <form id="createCourseForm">
+                    <!-- Section 1: Course Identity -->
+                    <div class="studio-card">
+                        <div class="studio-card-header">
+                            <div class="studio-card-title">
+                                <span>🏷️</span>
+                                <span>Course Identification</span>
+                            </div>
+                            <span class="badge badge-primary">Step 1</span>
+                        </div>
+
+                        <!-- Quick Template Chips -->
+                        <div style="margin-bottom: var(--space-4);">
+                            <span style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; display: block; margin-bottom: 6px;">
+                                Quick Load Templates:
+                            </span>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                                <span class="preset-chip" onclick="applyPreset('CS101 - Algorithms & Data Structures', 'CS101', 'Computer Science', 'Comprehensive study of algorithmic design, asymptotic notation, sorting methods, trees, and graphs.')">CS101 Algorithms</span>
+                                <span class="preset-chip" onclick="applyPreset('CS202 - Database Systems & SQL', 'CS202', 'Computer Science', 'Relational database schema modeling, normalization, indexing, transaction ACID properties, and SQL.')">CS202 Databases</span>
+                                <span class="preset-chip" onclick="applyPreset('AI305 - Applied Machine Learning', 'AI305', 'Data Science', 'Supervised and unsupervised models, loss functions, regression, decision forests, and neural networks.')">AI305 Machine Learning</span>
+                                <span class="preset-chip" onclick="applyPreset('MATH301 - Discrete Mathematics', 'MATH301', 'Mathematics', 'Set theory, combinatorics, proof by induction, propositional logic, and graph theory.')">MATH301 Discrete Math</span>
+                                <span class="preset-chip" onclick="applyPreset('WEB210 - Modern Web Architecture', 'WEB210', 'Information Technology', 'Full-stack client-server protocols, RESTful APIs, caching, and state management.')">WEB210 Web Systems</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: var(--space-4);">
+                            <label class="form-label" for="courseName">Course Title *</label>
+                            <input 
+                                type="text" 
+                                id="courseName" 
+                                class="input" 
+                                placeholder="e.g. CS101 - Algorithms & Data Structures" 
+                                required 
+                                autocomplete="off"
+                            >
+                            <small style="color: var(--text-muted); font-size: var(--font-size-xs); display: block; margin-top: 4px;">
+                                Full academic title displayed on student dashboards and transcripts.
+                            </small>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label class="form-label" for="courseCode">Course Catalog Code *</label>
+                            <input 
+                                type="text" 
+                                id="courseCode" 
+                                class="input" 
+                                placeholder="e.g. CS101" 
+                                style="text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700;" 
+                                required 
+                                autocomplete="off"
+                            >
+                            <small style="color: var(--text-muted); font-size: var(--font-size-xs); display: block; margin-top: 4px;">
+                                Short official departmental code (3-8 alphanumeric characters).
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Department & Academic Term -->
+                    <div class="studio-card">
+                        <div class="studio-card-header">
+                            <div class="studio-card-title">
+                                <span>🏛️</span>
+                                <span>Academic Classification</span>
+                            </div>
+                            <span class="badge badge-primary">Step 2</span>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-bottom: var(--space-4);">
+                            <div class="form-group" style="margin: 0;">
+                                <label class="form-label" for="department">Department *</label>
+                                <select id="department" class="select" required>
+                                    <option value="Computer Science">Computer Science</option>
+                                    <option value="Information Technology">Information Technology</option>
+                                    <option value="Data Science">Data Science</option>
+                                    <option value="Mathematics">Mathematics</option>
+                                    <option value="Electrical Engineering">Electrical Engineering</option>
+                                    <option value="General Science">General Science</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="margin: 0;">
+                                <label class="form-label" for="semester">Academic Term / Semester *</label>
+                                <select id="semester" class="select" required>
+                                    <option value="Fall 2026">Fall 2026</option>
+                                    <option value="Spring 2027">Spring 2027</option>
+                                    <option value="Summer 2026">Summer 2026</option>
+                                    <option value="Fall 2027">Fall 2027</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Theme / Accent Swatches -->
+                        <div>
+                            <label class="form-label" style="margin-bottom: 6px;">Course Card Accent Style</label>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div class="theme-swatch active" data-color="indigo" style="background: #4f46e5;" onclick="selectCardColor('#4f46e5', 'indigo')"></div>
+                                <div class="theme-swatch" data-color="emerald" style="background: #059669;" onclick="selectCardColor('#059669', 'emerald')"></div>
+                                <div class="theme-swatch" data-color="blue" style="background: #2563eb;" onclick="selectCardColor('#2563eb', 'blue')"></div>
+                                <div class="theme-swatch" data-color="purple" style="background: #7c3aed;" onclick="selectCardColor('#7c3aed', 'purple')"></div>
+                                <div class="theme-swatch" data-color="amber" style="background: #d97706;" onclick="selectCardColor('#d97706', 'amber')"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Syllabus & Description -->
+                    <div class="studio-card">
+                        <div class="studio-card-header">
+                            <div class="studio-card-title">
+                                <span>📄</span>
+                                <span>Syllabus & Overview</span>
+                            </div>
+                            <span class="badge badge-primary">Step 3</span>
+                        </div>
+
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" for="description">Course Description & Learning Outcomes</label>
+                            <textarea 
+                                id="description" 
+                                class="textarea" 
+                                rows="4" 
+                                placeholder="Describe prerequisites, key topics, coursework schedule, and evaluation criteria..."
+                            ></textarea>
+                            <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+                                <small style="color: var(--text-muted); font-size: var(--font-size-xs);">Displayed to students on discovery and catalog pages.</small>
+                                <small id="charCount" style="color: var(--text-subtle); font-size: var(--font-size-xs);">0 chars</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Actions -->
+                    <div style="display: flex; justify-content: flex-end; align-items: center; gap: var(--space-3); margin-top: var(--space-6);">
+                        <a href="teacher-courses.html" class="btn btn-outline">
+                            Cancel
+                        </a>
+                        <button type="submit" id="submitBtn" class="btn btn-primary btn-lg" style="box-shadow: var(--shadow-md);">
+                            <span id="btnText">Publish Course & Generate Key &rarr;</span>
+                            <span id="btnSpinner" class="spinner" style="display: none; width: 18px; height: 18px; border-width: 2px;"></span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Right Column: Live Student Preview Card & Guide -->
+            <div>
+                <!-- Real-time Live Preview Card -->
+                <div style="margin-bottom: var(--space-6);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 0.75rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; display: flex; align-items: center; gap: 6px;">
+                            <span>👁️</span> <span>Live Student Preview</span>
+                        </span>
+                        <span class="badge badge-success">✓ Ready for Enrollment</span>
+                    </div>
+
+                    <div class="card" style="padding: 0; overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--shadow-md);">
+                        <div id="previewCardBanner" class="banner-preview-box">
+                            <div>
+                                <span id="previewDeptTag" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.9; font-weight: 600;">Computer Science</span>
+                                <h3 id="previewTitle" style="font-size: 1.25rem; font-weight: 800; margin: 4px 0 0; color: white; line-height: 1.25;">
+                                    Introduction to Computer Science
+                                </h3>
+                            </div>
+                        </div>
+
+                        <div style="padding: var(--space-5);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-3);">
+                                <span id="previewCodeBadge" class="badge badge-primary">CS101</span>
+                                <span id="previewSemesterBadge" class="badge badge-neutral">Fall 2026</span>
+                            </div>
+
+                            <p id="previewDesc" style="font-size: var(--font-size-sm); color: var(--text-muted); line-height: 1.5; margin-bottom: var(--space-4); min-height: 48px;">
+                                Comprehensive study of foundational computing concepts, program design, and algorithmic problem-solving.
+                            </p>
+
+                            <div style="background: var(--bg-surface-alt); border-radius: var(--radius-md); padding: 10px 12px; margin-bottom: var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+                                <div style="font-size: 0.75rem; color: var(--text-muted);">
+                                    <span>Access Key:</span>
+                                    <strong style="color: var(--primary); font-family: monospace; font-size: 0.9rem; margin-left: 4px;">AUTO-GENERATED</strong>
+                                </div>
+                                <span class="badge badge-success" style="font-size: 0.7rem;">Active</span>
+                            </div>
+
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: var(--space-3);">
+                                <small style="color: var(--text-muted); font-size: var(--font-size-xs);">
+                                    Instructor: <strong id="previewTeacher" style="color: var(--text-main);">Faculty</strong>
+                                </small>
+                                <button type="button" class="btn btn-primary btn-sm" disabled style="opacity: 0.75;">Enter Course &rarr;</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructor Action Tips -->
+                <div class="studio-card">
+                    <div class="studio-card-header">
+                        <div class="studio-card-title">
+                            <span>💡</span>
+                            <span>Next Steps After Creation</span>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: var(--space-3); font-size: var(--font-size-xs); color: var(--text-muted); line-height: 1.5;">
+                        <div style="display: flex; gap: 10px;">
+                            <span style="font-size: 1.2rem; line-height: 1;">📹</span>
+                            <div>
+                                <strong style="color: var(--text-main); display: block;">Upload Lecture Videos</strong>
+                                Immediately upload recordings (.mp4, .webm) or link streaming videos.
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <span style="font-size: 1.2rem; line-height: 1;">📝</span>
+                            <div>
+                                <strong style="color: var(--text-main); display: block;">Publish Coursework</strong>
+                                Create assignments with instructions, points, and deadlines for students.
+                            </div>
+                        </div>
+
+                        <div style="display: flex; gap: 10px;">
+                            <span style="font-size: 1.2rem; line-height: 1;">🔑</span>
+                            <div>
+                                <strong style="color: var(--text-main); display: block;">Share Enrollment Key</strong>
+                                Distribute your unique 8-character code so enrolled students can access materials.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Early route guard -->
     <script>
-        /* Early route guard — runs before layout.js is fully parsed */
         (function() {
             var token = localStorage.getItem("jwtToken") || sessionStorage.getItem("jwtToken");
             if (!token) { window.location.href = "login.html"; return; }
@@ -71,10 +404,10 @@
                 if (p.exp && Date.now()/1000 > p.exp) {
                     localStorage.removeItem("jwtToken"); sessionStorage.removeItem("jwtToken");
                     window.location.href = "login.html?reason=expired";
+                    return;
                 }
                 var role = p.role || "";
-                var allowed = ["TEACHER"];
-                if (allowed.length && allowed.indexOf(role) === -1) {
+                if (role !== "TEACHER" && role !== "ADMIN") {
                     var map = {ADMIN:"admin-dashboard.html",TEACHER:"teacher-dashboard.html",STUDENT:"student-dashboard.html"};
                     window.location.href = map[role] || "login.html";
                 }

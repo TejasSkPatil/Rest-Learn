@@ -10,6 +10,10 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body class="public-page">
+    <div class="theme-toggle-corner">
+        <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Dark/Light Mode" aria-label="Toggle theme">🌙</button>
+    </div>
+
     <div class="public-container">
         <h1>E-Learning Platform</h1>
         <div class="form-box">
@@ -21,12 +25,30 @@
                 <button type="submit"  id="submitBtn">Sign In</button>
             </form>
             <p id="message" class="form-message"></p>
+
+            <div style="margin-top: 16px; padding: 12px; background: var(--bg-surface-alt); border-radius: var(--radius-md); font-size: 0.8rem; text-align: center;">
+                <div style="font-weight: 600; color: var(--text-muted); margin-bottom: 8px;">Quick Demo Login:</div>
+                <div style="display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;">
+                    <button type="button" class="btn-outline btn-sm" style="width: auto; padding: 4px 10px; font-size: 0.75rem;" onclick="fillLogin('admin@university.edu','password123')">Admin</button>
+                    <button type="button" class="btn-outline btn-sm" style="width: auto; padding: 4px 10px; font-size: 0.75rem;" onclick="fillLogin('teacher@university.edu','password123')">Teacher</button>
+                    <button type="button" class="btn-outline btn-sm" style="width: auto; padding: 4px 10px; font-size: 0.75rem;" onclick="fillLogin('student@university.edu','password123')">Student</button>
+                </div>
+            </div>
+
             <div class="form-footer">
                 Don't have an account? <a href="register.html">Sign Up</a>
             </div>
         </div>
         <div class="back-home"><a href="index.html">&larr; Back to Home</a></div>
     </div>
+
+    <script>
+        function fillLogin(email, password) {
+            document.getElementById('email').value = email;
+            document.getElementById('password').value = password;
+        }
+    </script>
+    <script src="js/theme-toggle.js"></script>
     <script src="js/login.js"></script>
     <script src="js/toast.js"></script>
     <script src="js/api.js"></script>

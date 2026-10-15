@@ -32,7 +32,7 @@ async function loadAssignments() {
     const assignmentsList = document.getElementById('assignmentsList');
 
     try {
-        const response = await fetch(`http://localhost:8080/api/modules/${currentModuleId}/assignments`, {
+        const response = await fetch(`/api/modules/${currentModuleId}/assignments`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
